@@ -10,10 +10,10 @@ import { BudgetScreen } from './screens/budget/BudgetScreen';
 import { openSearch } from './screens/budget/SearchSheet';
 import { openTopUp } from './screens/budget/TopUpSheet';
 import { openTransfer } from './screens/budget/TransferSheet';
+import { PlannerPage } from './screens/planner/PlannerPage';
 import { handleLaunch } from './screens/shortcut/IncomingTopUp';
 import { ShortcutGuidePage } from './screens/shortcut/ShortcutGuidePage';
 import { Ambient } from './ui/Ambient';
-import { Page } from './ui/Page';
 import { SheetHost } from './ui/sheets';
 import { TabBar, TABS, type Tab } from './ui/TabBar';
 import { ToastHost, toast } from './ui/Toast';
@@ -123,11 +123,7 @@ export function App() {
         <TabBar tab={tab} onChange={go} onPlus={() => setPage('planner')} />
         <AnimatePresence>
           {page === 'shortcut' && <ShortcutGuidePage key="shortcut" onBack={closePage} />}
-          {page === 'planner' && (
-            <Page key="planner" title="Планировщик" onBack={closePage}>
-              <p className="t-sub">Скоро</p>
-            </Page>
-          )}
+          {page === 'planner' && <PlannerPage key="planner" onBack={closePage} />}
         </AnimatePresence>
         <SheetHost />
         <ToastHost />

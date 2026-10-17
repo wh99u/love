@@ -10,10 +10,12 @@ interface PageProps {
   onBack: () => void;
   children: ReactNode;
   action?: ReactNode;
+  /** Rendered outside the scroll area: background light, floating buttons. */
+  overlay?: ReactNode;
 }
 
 /** Full-screen page pushed over the tabs; Telegram's own Back button closes it. */
-export function Page({ title, onBack, children, action }: PageProps) {
+export function Page({ title, onBack, children, action, overlay }: PageProps) {
   useEffect(() => {
     backButton.show(onBack);
     return () => backButton.hide();
@@ -40,6 +42,7 @@ export function Page({ title, onBack, children, action }: PageProps) {
         <div className="page-action">{action}</div>
       </header>
       <div className="page-scroll">{children}</div>
+      {overlay}
     </motion.section>
   );
 }
