@@ -1,6 +1,7 @@
 import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { appStore } from './lib/appStore';
+import { dayKey } from './lib/dates';
 import { initTelegram } from './lib/telegram';
 import { startTilt } from './lib/tilt';
 import type { SearchHit } from './lib/search';
@@ -10,6 +11,8 @@ import { BudgetScreen } from './screens/budget/BudgetScreen';
 import { openSearch } from './screens/budget/SearchSheet';
 import { openTopUp } from './screens/budget/TopUpSheet';
 import { openTransfer } from './screens/budget/TransferSheet';
+import { CalendarScreen } from './screens/calendar/CalendarScreen';
+import { openTaskForm } from './screens/calendar/forms';
 import { BuysScreen } from './screens/buys/BuysScreen';
 import { openBuyForm } from './screens/buys/BuyForm';
 import { DreamScreen } from './screens/dream/DreamScreen';
@@ -38,19 +41,12 @@ const variants = {
   exit: (dir: number) => ({ opacity: 0, x: dir * -28, filter: 'blur(6px)' }),
 };
 
-function Placeholder({ title }: { title: string }) {
-  return (
-    <div className="screen">
-      <h1 className="t-title">{title}</h1>
-    </div>
-  );
-}
-
 export function App() {
   const [tab, setTab] = useState<Tab>('budget');
   const [dir, setDir] = useState(1);
   const [page, setPage] = useState<PageId | null>(null);
   const [ambient, setAmbient] = useState<AmbientColors | null>(null);
+  const [day, setDay] = useState(() => dayKey(new Date()));
 
   useEffect(() => {
     initTelegram();
@@ -90,7 +86,7 @@ export function App() {
     budget: () => openBankForm(),
     dream: openDreamForm,
     buys: () => openBuyForm(),
-    calendar: () => toast('Скоро'),
+    calendar: () => openTaskForm(day),
   };
 
   const screens: Record<Tab, ReactNode> = {
@@ -109,7 +105,7 @@ export function App() {
     ),
     dream: <DreamScreen />,
     buys: <BuysScreen />,
-    calendar: <Placeholder title="Календарь" />,
+    calendar: <CalendarScreen selected={day} onSelect={setDay} />,
   };
 
   return (

@@ -51,6 +51,16 @@ export function fmtMonth(ym: string) {
   return `${new Date(y, m - 1, 1).toLocaleDateString('ru-RU', { month: 'long' })} ${y}`;
 }
 
+/** Calendar cells for a month, Monday first; null pads the days before the 1st. */
+export function monthGrid(ym: string): (string | null)[] {
+  const [y, m] = parseYm(ym);
+  const lead = (new Date(y, m - 1, 1).getDay() + 6) % 7;
+  return [...Array<null>(lead).fill(null), ...Array.from({ length: daysInMonth(ym) }, (_, i) => `${ym}-${pad(i + 1)}`)];
+}
+
+/** «пятница, 16 октября». */
+export const fmtWeekday = (key: string) => parseDay(key).toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' });
+
 /** «октябрь» — nominative month name, also right for «на октябрь». */
 export function monthName(ym: string) {
   const [y, m] = parseYm(ym);
