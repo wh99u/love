@@ -10,6 +10,8 @@ import { BudgetScreen } from './screens/budget/BudgetScreen';
 import { openSearch } from './screens/budget/SearchSheet';
 import { openTopUp } from './screens/budget/TopUpSheet';
 import { openTransfer } from './screens/budget/TransferSheet';
+import { handleLaunch } from './screens/shortcut/IncomingTopUp';
+import { ShortcutGuidePage } from './screens/shortcut/ShortcutGuidePage';
 import { Ambient } from './ui/Ambient';
 import { Page } from './ui/Page';
 import { SheetHost } from './ui/sheets';
@@ -52,6 +54,7 @@ export function App() {
     const off = appStore.onError((e) =>
       toast(e === 'save' ? 'Не удалось сохранить: память браузера заполнена' : 'Старые данные не прочитались, начинаем с чистого листа', 'error'),
     );
+    handleLaunch();
     return () => {
       stopTilt();
       off();
@@ -119,8 +122,9 @@ export function App() {
         </div>
         <TabBar tab={tab} onChange={go} onPlus={() => setPage('planner')} />
         <AnimatePresence>
-          {page && (
-            <Page key={page} title={page} onBack={closePage}>
+          {page === 'shortcut' && <ShortcutGuidePage key="shortcut" onBack={closePage} />}
+          {page === 'planner' && (
+            <Page key="planner" title="Планировщик" onBack={closePage}>
               <p className="t-sub">Скоро</p>
             </Page>
           )}
