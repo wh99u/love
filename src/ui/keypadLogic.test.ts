@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { keypadReduce } from './keypad';
+import { keypadReduce } from './keypadLogic';
 
 test.each([
   ['', '0', ''],

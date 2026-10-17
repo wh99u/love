@@ -4,6 +4,7 @@ import './styles/tokens.css';
 import './styles/base.css';
 import './styles/glass.css';
 import './ui/ui.css';
+import './ui/forms.css';
 import { App } from './App';
 
 // Chromium can refract the backdrop through an SVG filter; WebKit (iPhone) cannot.

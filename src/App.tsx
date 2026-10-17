@@ -3,7 +3,13 @@ import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { appStore } from './lib/appStore';
 import { initTelegram } from './lib/telegram';
 import { startTilt } from './lib/tilt';
+import type { SearchHit } from './lib/search';
+import { openAccruals } from './screens/budget/AccrualsSheet';
+import { openBankForm } from './screens/budget/BankForm';
 import { BudgetScreen } from './screens/budget/BudgetScreen';
+import { openSearch } from './screens/budget/SearchSheet';
+import { openTopUp } from './screens/budget/TopUpSheet';
+import { openTransfer } from './screens/budget/TransferSheet';
 import { Ambient } from './ui/Ambient';
 import { Page } from './ui/Page';
 import { SheetHost } from './ui/sheets';
@@ -65,16 +71,22 @@ export function App() {
 
   const closePage = useCallback(() => setPage(null), []);
 
-  const soon = () => toast('Скоро');
+  const onPick = (h: SearchHit) => {
+    if (h.group === 'buys') go('buys');
+    else if (h.group === 'tasks') go('calendar');
+    else if (h.group === 'incomes') openAccruals();
+    else setPage('planner');
+  };
+
   const screens: Record<Tab, ReactNode> = {
     budget: (
       <BudgetScreen
-        onTopUp={soon}
-        onTransfer={soon}
-        onNewCard={soon}
-        onEditCard={soon}
-        onSearch={soon}
-        onAccruals={soon}
+        onTopUp={(b) => openTopUp(b?.id)}
+        onTransfer={(b) => openTransfer(b?.id)}
+        onNewCard={() => openBankForm()}
+        onEditCard={openBankForm}
+        onSearch={() => openSearch(onPick)}
+        onAccruals={openAccruals}
         onOpenPlanner={() => setPage('planner')}
         onOpenShortcut={() => setPage('shortcut')}
         onAmbient={setAmbient}
