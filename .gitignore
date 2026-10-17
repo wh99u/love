@@ -8,3 +8,4 @@ docs/references/
 
 # локальные настройки и скиллы Claude Code
 .claude/
+.superpowers/

@@ -1,0 +1,34 @@
+:root {
+  --bg: #000;
+  --text: #fff;
+  --text-2: rgba(235, 235, 245, 0.6);
+  --text-3: rgba(235, 235, 245, 0.35);
+  --line: rgba(255, 255, 255, 0.12);
+
+  --yellow: #ffdd2d;
+  --green: #30d158;
+  --red: #ff453a;
+  --blue: #8ab4ff;
+  --violet: #6e4bff;
+
+  --r-xl: 36px;
+  --r-lg: 28px;
+  --r-md: 20px;
+  --r-pill: 999px;
+
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-bg-strong: rgba(255, 255, 255, 0.1);
+  --glass-blur: blur(24px) saturate(180%);
+
+  --tilt-x: 0;
+  --tilt-y: 0;
+
+  /* Telegram safe areas, overwritten from lib/telegram.ts */
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --csat: 0px;
+  --top-inset: calc(var(--sat) + var(--csat));
+
+  --font: -apple-system, 'SF Pro Text', 'SF Pro Display', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --ease-out: cubic-bezier(0.2, 0.9, 0.2, 1);
+}
