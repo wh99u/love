@@ -10,7 +10,10 @@ import { BudgetScreen } from './screens/budget/BudgetScreen';
 import { openSearch } from './screens/budget/SearchSheet';
 import { openTopUp } from './screens/budget/TopUpSheet';
 import { openTransfer } from './screens/budget/TransferSheet';
+import { BuysScreen } from './screens/buys/BuysScreen';
+import { openBuyForm } from './screens/buys/BuyForm';
 import { DreamScreen } from './screens/dream/DreamScreen';
+import { openDreamForm } from './screens/dream/DreamForm';
 import { PlannerPage } from './screens/planner/PlannerPage';
 import { handleLaunch } from './screens/shortcut/IncomingTopUp';
 import { ShortcutGuidePage } from './screens/shortcut/ShortcutGuidePage';
@@ -82,6 +85,14 @@ export function App() {
     else setPage('planner');
   };
 
+  /** The white «+» adds whatever the current tab is about. */
+  const plus: Record<Tab, () => void> = {
+    budget: () => openBankForm(),
+    dream: openDreamForm,
+    buys: () => openBuyForm(),
+    calendar: () => toast('Скоро'),
+  };
+
   const screens: Record<Tab, ReactNode> = {
     budget: (
       <BudgetScreen
@@ -97,7 +108,7 @@ export function App() {
       />
     ),
     dream: <DreamScreen />,
-    buys: <Placeholder title="Покупки" />,
+    buys: <BuysScreen />,
     calendar: <Placeholder title="Календарь" />,
   };
 
@@ -121,7 +132,7 @@ export function App() {
             </motion.div>
           </AnimatePresence>
         </div>
-        <TabBar tab={tab} onChange={go} onPlus={() => setPage('planner')} />
+        <TabBar tab={tab} onChange={go} onPlus={plus[tab]} />
         <AnimatePresence>
           {page === 'shortcut' && <ShortcutGuidePage key="shortcut" onBack={closePage} />}
           {page === 'planner' && <PlannerPage key="planner" onBack={closePage} />}

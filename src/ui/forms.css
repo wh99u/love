@@ -167,8 +167,10 @@
   background-position: 0 0, 0 9px, 9px -9px, -9px 0;
 }
 .photo-preview img {
-  max-width: 88%;
-  max-height: 88%;
+  position: absolute;
+  inset: 12px;
+  width: calc(100% - 24px);
+  height: calc(100% - 24px);
   object-fit: contain;
   filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.5));
 }
