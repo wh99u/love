@@ -10,6 +10,7 @@ import { BudgetScreen } from './screens/budget/BudgetScreen';
 import { openSearch } from './screens/budget/SearchSheet';
 import { openTopUp } from './screens/budget/TopUpSheet';
 import { openTransfer } from './screens/budget/TransferSheet';
+import { DreamScreen } from './screens/dream/DreamScreen';
 import { PlannerPage } from './screens/planner/PlannerPage';
 import { handleLaunch } from './screens/shortcut/IncomingTopUp';
 import { ShortcutGuidePage } from './screens/shortcut/ShortcutGuidePage';
@@ -95,7 +96,7 @@ export function App() {
         onAmbient={setAmbient}
       />
     ),
-    dream: <Placeholder title="Мечта" />,
+    dream: <DreamScreen />,
     buys: <Placeholder title="Покупки" />,
     calendar: <Placeholder title="Календарь" />,
   };
