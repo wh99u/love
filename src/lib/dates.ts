@@ -51,6 +51,12 @@ export function fmtMonth(ym: string) {
   return `${new Date(y, m - 1, 1).toLocaleDateString('ru-RU', { month: 'long' })} ${y}`;
 }
 
+/** «октябрь» — nominative month name, also right for «на октябрь». */
+export function monthName(ym: string) {
+  const [y, m] = parseYm(ym);
+  return new Date(y, m - 1, 1).toLocaleDateString('ru-RU', { month: 'long' });
+}
+
 /** «октябре» — prepositional month name for «в октябре». */
 export function monthIn(ym: string) {
   const forms = ['январе', 'феврале', 'марте', 'апреле', 'мае', 'июне', 'июле', 'августе', 'сентябре', 'октябре', 'ноябре', 'декабре'];

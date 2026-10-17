@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { addMonths, dayKey, daysInMonth, daysLeftInMonth, fmtMonth, ymKey } from './dates';
+import { addMonths, dayKey, daysInMonth, daysLeftInMonth, fmtMonth, monthIn, monthName, ymKey } from './dates';
 
 describe('date keys', () => {
   test('dayKey uses local calendar date with zero padding', () => {
@@ -29,5 +29,10 @@ describe('month math', () => {
   });
   test('fmtMonth is a lowercase russian month with year', () => {
     expect(fmtMonth('2026-10')).toBe('октябрь 2026');
+  });
+  test('monthName and monthIn give the forms for «на …» and «в …»', () => {
+    expect(monthName('2026-05')).toBe('май');
+    expect(monthIn('2026-05')).toBe('мае');
+    expect(monthIn('2026-10')).toBe('октябре');
   });
 });

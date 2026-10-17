@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { appStore } from './lib/appStore';
 import { initTelegram } from './lib/telegram';
 import { startTilt } from './lib/tilt';
+import { BudgetScreen } from './screens/budget/BudgetScreen';
 import { Ambient } from './ui/Ambient';
 import { Page } from './ui/Page';
 import { SheetHost } from './ui/sheets';
@@ -64,8 +65,21 @@ export function App() {
 
   const closePage = useCallback(() => setPage(null), []);
 
+  const soon = () => toast('Скоро');
   const screens: Record<Tab, ReactNode> = {
-    budget: <Placeholder title="Бюджет" />,
+    budget: (
+      <BudgetScreen
+        onTopUp={soon}
+        onTransfer={soon}
+        onNewCard={soon}
+        onEditCard={soon}
+        onSearch={soon}
+        onAccruals={soon}
+        onOpenPlanner={() => setPage('planner')}
+        onOpenShortcut={() => setPage('shortcut')}
+        onAmbient={setAmbient}
+      />
+    ),
     dream: <Placeholder title="Мечта" />,
     buys: <Placeholder title="Покупки" />,
     calendar: <Placeholder title="Календарь" />,
