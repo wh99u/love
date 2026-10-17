@@ -30,5 +30,10 @@
   --top-inset: calc(var(--sat) + var(--csat));
 
   --font: -apple-system, 'SF Pro Text', 'SF Pro Display', system-ui, 'Segoe UI', Roboto, sans-serif;
+  /* SF Pro Rounded on Apple devices: the friendly numeral face of the app */
+  --font-round: ui-rounded, 'SF Pro Rounded', -apple-system, system-ui, 'Segoe UI', Roboto, sans-serif;
+  --nav-h: 64px;
+  --nav-gap: calc(12px + max(var(--sab), 8px));
+  --screen-bottom: calc(var(--nav-h) + var(--nav-gap) + 28px);
   --ease-out: cubic-bezier(0.2, 0.9, 0.2, 1);
 }
