@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.local
+.DS_Store
+
+# личные скриншоты-референсы — не публикуем
+docs/references/
+
+# локальные настройки и скиллы Claude Code
+.claude/
