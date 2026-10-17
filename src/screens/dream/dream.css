@@ -34,6 +34,7 @@
     radial-gradient(60% 30% at 50% 100%, rgba(0, 0, 0, 0.6), transparent 70%);
 }
 .dream-name {
+  display: block;
   font: 700 34px/1.08 var(--font-round);
   letter-spacing: -0.03em;
   padding: 0 12px;

@@ -136,7 +136,7 @@ export function PlannerPage({ onBack }: { onBack: () => void }) {
           <div className="cats">
             {s.cats.map((c, i) => (
               <motion.div key={c.cat.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03 * i }}>
-                <Pressable className="cat-row glass" scale={0.98} onPress={() => openCategory(ym, c.cat.id)}>
+                <Pressable className="cat-row glass glass--solid" scale={0.98} onPress={() => openCategory(ym, c.cat.id)}>
                   <span className="cat-icon" style={{ background: `${c.cat.color}26`, color: c.cat.color }}>
                     <Icon name={c.cat.icon} size={22} />
                   </span>

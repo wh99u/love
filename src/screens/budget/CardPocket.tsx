@@ -4,7 +4,7 @@ import { haptic } from '../../lib/telegram';
 import type { Bank } from '../../lib/types';
 import { springs } from '../../ui/motion';
 import { BankCard } from './BankCard';
-import { cardPose, clampIndex, rubberBand, snapTarget } from './pocket';
+import { cardPose, clampIndex, flickVelocity, rubberBand, shouldGlide, snapTarget } from './pocket';
 
 const CARD_SHARE = 0.58;
 const STEP = 0.78;
@@ -55,11 +55,18 @@ export function CardPocket({ banks, index, onIndex, onCardPress, onEmptyPress }:
     return () => ro.disconnect();
   }, []);
 
-  // External index changes (deleted card, new card) glide the deck.
+  const dragging = useRef(false);
+  const moved = useRef(false); // a swipe must never also count as a tap on the card
+  const lastCount = useRef(count);
+
+  // Outside index changes (deleted or added card) glide the deck; the deck's own reports do not.
   useEffect(() => {
     const target = clampIndex(index, count);
+    const countChanged = lastCount.current !== count;
+    lastCount.current = count;
+    if (!shouldGlide({ target, shown: shown.current, dragging: dragging.current, countChanged })) return;
     shown.current = target;
-    if (Math.abs(pos.get() - target) > 0.001) animate(pos, target, springs.snappy);
+    animate(pos, target, springs.snappy);
   }, [index, count, pos]);
 
   useMotionValueEvent(pos, 'change', (p) => {
@@ -73,19 +80,28 @@ export function CardPocket({ banks, index, onIndex, onCardPress, onEmptyPress }:
 
   const step = width * STEP;
   const onPanStart = () => {
+    moved.current = true;
+    dragging.current = true;
     pos.stop();
     start.current = pos.get();
   };
   const onPan = (_: PointerEvent, info: PanInfo) => pos.set(rubberBand(start.current - info.offset.x / step, count));
   const onPanEnd = (_: PointerEvent, info: PanInfo) => {
+    dragging.current = false;
     const from = clampIndex(Math.round(start.current), count);
     const target = snapTarget(from, info.offset.x / step, info.velocity.x, count);
-    animate(pos, target, { ...springs.snappy, velocity: -info.velocity.x / step });
+    animate(pos, target, { ...springs.snappy, velocity: flickVelocity(info.velocity.x, step) });
   };
 
   return (
     <div className="pocket" ref={box}>
-      <motion.div className="pocket-deck" onPanStart={onPanStart} onPan={onPan} onPanEnd={onPanEnd}>
+      <motion.div
+        className="pocket-deck"
+        onPointerDownCapture={() => (moved.current = false)}
+        onPanStart={onPanStart}
+        onPan={onPan}
+        onPanEnd={onPanEnd}
+      >
         {count === 0 ? (
           <motion.button className="pocket-card pocket-empty glass" style={{ width, marginLeft: -width / 2, y: -24 }} whileTap={{ scale: 0.96 }} onClick={onEmptyPress}>
             Добавьте карту
@@ -98,7 +114,11 @@ export function CardPocket({ banks, index, onIndex, onCardPress, onEmptyPress }:
               i={i}
               pos={pos}
               width={width}
-              onTap={() => (i === shown.current ? onCardPress(b) : animate(pos, i, springs.snappy))}
+              onTap={() => {
+                if (moved.current) return;
+                if (i === shown.current) onCardPress(b);
+                else animate(pos, i, springs.snappy);
+              }}
             />
           ))
         )}

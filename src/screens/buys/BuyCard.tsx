@@ -39,7 +39,7 @@ export function BuyCard({ buy, index, onOpen, onMenu }: BuyCardProps) {
   return (
     <motion.button
       layout
-      className="buy glass"
+      className="buy glass glass--solid"
       style={{ background: `linear-gradient(155deg, ${alpha(shade(tint, 0.1), 0.62)}, ${alpha(shade(tint, -0.55), 0.7)})` }}
       initial={{ opacity: 0, y: 24, scale: 0.94 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}

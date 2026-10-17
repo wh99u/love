@@ -19,7 +19,7 @@ export interface StoreOptions {
 const SAVE_DELAY = 150;
 const MAX_LAUNCHES = 50;
 
-function load(storage: Storage, key: string, opts: StoreOptions, now: number): { state: StateV4; error: boolean } {
+function load(storage: Storage, key: string, opts: StoreOptions, now: number): { state: StateV4; error: boolean; fresh?: boolean } {
   const read = (k: string) => {
     try {
       return storage.getItem(k);
@@ -44,12 +44,12 @@ function load(storage: Storage, key: string, opts: StoreOptions, now: number): {
   const legacy = opts.legacyKey ? read(opts.legacyKey) : null;
   if (legacy) {
     try {
-      return { state: migrateV3(JSON.parse(legacy), now), error: !!own };
+      return { state: migrateV3(JSON.parse(legacy), now), error: !!own, fresh: true };
     } catch {
       return { state: emptyState(now), error: true };
     }
   }
-  if (opts.seed) return { state: opts.seed(), error: !!own };
+  if (opts.seed) return { state: opts.seed(), error: !!own, fresh: true };
   return { state: emptyState(now), error: !!own };
 }
 
@@ -229,6 +229,9 @@ export function createStore(storage: Storage, key: string, opts: StoreOptions = 
       return true;
     },
   };
+
+  // Migrated or seeded data becomes the source of truth immediately.
+  if (loaded.fresh) flush();
 
   if (typeof document !== 'undefined') {
     document.addEventListener('visibilitychange', () => {

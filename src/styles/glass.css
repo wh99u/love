@@ -59,3 +59,9 @@
   -webkit-backdrop-filter: url(#lens) blur(14px) saturate(190%);
   backdrop-filter: url(#lens) blur(14px) saturate(190%);
 }
+/* Same look without a live backdrop blur: for small repeated elements sitting on
+   plain black or inside a sheet, where blurring adds cost but nothing visible. */
+.glass--solid {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}

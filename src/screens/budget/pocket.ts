@@ -38,6 +38,25 @@ export function rubberBand(pos: number, count: number) {
   return pos;
 }
 
+/**
+ * Should the deck animate to `target` after the selected index changed?
+ * Never while the finger holds it, and never for an index the deck reported
+ * itself while settling (a hard flick may overshoot past the end for a moment).
+ * Only outside changes and added/deleted cards move it.
+ */
+export function shouldGlide({ target, shown, dragging, countChanged }: { target: number; shown: number; dragging: boolean; countChanged: boolean }) {
+  if (dragging) return false;
+  return target !== shown || countChanged;
+}
+
+const MAX_FLICK = 6; // cards per second
+
+/** Finger velocity (px/s, left is negative) → deck velocity (cards/s), capped so flicks never skip a card. */
+export function flickVelocity(velocityX: number, step: number) {
+  const v = -velocityX / step;
+  return Math.max(-MAX_FLICK, Math.min(MAX_FLICK, v)) + 0;
+}
+
 export function balanceFontSize(text: string) {
   if (text.length <= 9) return 64;
   if (text.length <= 12) return 52;

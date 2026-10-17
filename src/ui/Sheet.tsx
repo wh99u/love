@@ -1,5 +1,6 @@
 import { motion, useDragControls, useMotionValue, useTransform, type PanInfo } from 'motion/react';
-import { useRef, type ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
+import { backButton } from '../lib/telegram';
 import { springs } from './motion';
 
 interface SheetProps {
@@ -16,6 +17,9 @@ export function Sheet({ children, onClose, depth }: SheetProps) {
   const controls = useDragControls();
   const y = useMotionValue(0);
   const panel = useRef<HTMLDivElement>(null);
+  const close = useRef(onClose);
+  close.current = onClose;
+  useEffect(() => backButton.push(() => close.current()), []);
   const dim = useTransform(y, (v) => Math.max(0, 1 - v / Math.max(1, (panel.current?.offsetHeight ?? 600) * 1.2)));
 
   const onDragEnd = (_: unknown, info: PanInfo) => {

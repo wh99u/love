@@ -29,9 +29,9 @@ export function DreamScreen() {
     <div className="screen dream">
       <Pressable className="dream-card" scale={0.98} onPress={openDreamForm} aria-label="Изменить мечту">
         <span className="dream-card-glow" />
-        <motion.h1 className="dream-name" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={springs.soft}>
+        <motion.span className="dream-name" role="heading" aria-level={1} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={springs.soft}>
           {car.name}
-        </motion.h1>
+        </motion.span>
         <span className="dream-tag glass glass--flat">
           <Icon name="sparkle" size={18} />
           Авто мечты

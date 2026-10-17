@@ -1,5 +1,7 @@
 /* The only module that touches window.Telegram. Everything degrades to no-ops in a plain browser. */
 
+import { createBackStack } from './backStack';
+
 interface Inset {
   top: number;
   bottom: number;
@@ -102,24 +104,23 @@ export function haptic(kind: HapticKind = 'light') {
 }
 
 let backHandler: (() => void) | null = null;
+const backStack = createBackStack((top) => {
+  const b = isTelegram ? tg?.BackButton : undefined;
+  if (!b) return;
+  safe(() => {
+    if (backHandler) b.offClick(backHandler);
+    backHandler = top;
+    if (top) {
+      b.onClick(top);
+      b.show();
+    } else b.hide();
+  });
+});
 
+/** Telegram's Back button closes the newest sheet first, then the page. */
 export const backButton = {
   available: isTelegram && !!tg?.BackButton,
-  show(cb: () => void) {
-    const b = isTelegram ? tg?.BackButton : undefined;
-    if (!b) return;
-    if (backHandler) b.offClick(backHandler);
-    backHandler = cb;
-    b.onClick(cb);
-    b.show();
-  },
-  hide() {
-    const b = isTelegram ? tg?.BackButton : undefined;
-    if (!b) return;
-    if (backHandler) b.offClick(backHandler);
-    backHandler = null;
-    b.hide();
-  },
+  push: backStack.push,
 };
 
 export function getLaunch(): { param: string | null; authDate: string | null } {

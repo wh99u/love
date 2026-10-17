@@ -16,10 +16,7 @@ interface PageProps {
 
 /** Full-screen page pushed over the tabs; Telegram's own Back button closes it. */
 export function Page({ title, onBack, children, action, overlay }: PageProps) {
-  useEffect(() => {
-    backButton.show(onBack);
-    return () => backButton.hide();
-  }, [onBack]);
+  useEffect(() => backButton.push(onBack), [onBack]);
 
   return (
     <motion.section

@@ -24,7 +24,7 @@ export function Keypad({ value, onChange }: KeypadProps) {
       {KEYS.map((k) => (
         <Pressable
           key={k}
-          className="keypad-key glass glass--flat"
+          className="keypad-key glass glass--flat glass--solid"
           feedback="selection"
           scale={0.9}
           aria-label={k === '⌫' ? 'Стереть' : k}

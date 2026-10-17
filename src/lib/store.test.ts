@@ -32,6 +32,12 @@ describe('loading', () => {
     expect(JSON.parse(localStorage.getItem(KEY)!).personal.plan).toBe(10);
   });
 
+  test('migrated legacy data is written to the new key right away', () => {
+    localStorage.setItem(LEGACY, JSON.stringify({ banks: [{ id: 1, code: 'vtb', sum: 700 }] }));
+    fresh();
+    expect(JSON.parse(localStorage.getItem(KEY)!).shared.banks[0]).toMatchObject({ id: '1', sum: 700 });
+  });
+
   test('v4 wins over legacy when both exist', () => {
     localStorage.setItem(LEGACY, JSON.stringify({ plan: 1 }));
     const a = fresh();

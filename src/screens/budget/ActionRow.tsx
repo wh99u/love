@@ -14,7 +14,7 @@ export function ActionRow({ actions }: { actions: Action[] }) {
     <div className="actions" role="toolbar" aria-label="Действия">
       {actions.map((a) => (
         <Pressable key={a.id} className="action" onPress={a.run} scale={0.9}>
-          <span className="action-circle glass">
+          <span className="action-circle glass glass--solid">
             <Icon name={a.icon} size={28} stroke={1.9} />
           </span>
           <span className="action-label">{a.label}</span>

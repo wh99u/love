@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { balanceFontSize, cardPose, clampIndex, rubberBand, snapTarget } from './pocket';
+import { balanceFontSize, cardPose, clampIndex, flickVelocity, rubberBand, shouldGlide, snapTarget } from './pocket';
 
 describe('cardPose', () => {
   test('active card is raised out of the pocket', () => {
@@ -55,6 +55,29 @@ describe('clampIndex', () => {
     expect(clampIndex(0, 0)).toBe(0);
     expect(clampIndex(-1, 3)).toBe(0);
     expect(clampIndex(1, 3)).toBe(1);
+  });
+});
+
+describe('shouldGlide', () => {
+  test('never fights the finger while dragging', () => {
+    expect(shouldGlide({ target: 1, shown: 0, dragging: true, countChanged: false })).toBe(false);
+  });
+  test('ignores indexes the deck reported itself, even when a flick overshoots past the end', () => {
+    expect(shouldGlide({ target: 2, shown: 2, dragging: false, countChanged: false })).toBe(false);
+  });
+  test('glides when the index changes from outside', () => {
+    expect(shouldGlide({ target: 2, shown: 0, dragging: false, countChanged: false })).toBe(true);
+  });
+  test('glides when a card was added or deleted', () => {
+    expect(shouldGlide({ target: 1, shown: 1, dragging: false, countChanged: true })).toBe(true);
+  });
+});
+
+describe('flickVelocity', () => {
+  test('converts px/s to cards/s and caps hard flicks', () => {
+    expect(flickVelocity(-352, 176)).toBe(2);
+    expect(flickVelocity(-5000, 176)).toBe(6);
+    expect(flickVelocity(5000, 176)).toBe(-6);
   });
 });
 
