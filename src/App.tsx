@@ -36,9 +36,9 @@ const TAB_AMBIENT: Record<Tab, AmbientColors> = {
 };
 
 const variants = {
-  enter: (dir: number) => ({ opacity: 0, x: dir * 28, filter: 'blur(6px)' }),
-  center: { opacity: 1, x: 0, filter: 'blur(0px)' },
-  exit: (dir: number) => ({ opacity: 0, x: dir * -28, filter: 'blur(6px)' }),
+  enter: (dir: number) => ({ opacity: 0, x: dir * 28 }),
+  center: { opacity: 1, x: 0 },
+  exit: (dir: number) => ({ opacity: 0, x: dir * -28 }),
 };
 
 export function App() {

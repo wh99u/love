@@ -1,5 +1,3 @@
-import { isTelegram, tg } from './telegram';
-
 const clamp = (v: number) => Math.max(-1, Math.min(1, v));
 const NEUTRAL_BETA = 0.7; // ~40°, how a phone is usually held
 const RANGE = 0.6;
@@ -15,7 +13,7 @@ function write(x: number, y: number) {
   s.setProperty('--tilt-y', y.toFixed(3));
 }
 
-/** Drives --tilt-x/--tilt-y from Telegram's DeviceOrientation, or the pointer on desktop. */
+/** Drives --tilt-x/--tilt-y from the mouse on desktop. Phones keep a static highlight: gyroscope-driven repaints cost too many frames. */
 export function startTilt(): () => void {
   if (typeof window === 'undefined' || matchMedia('(prefers-reduced-motion: reduce)').matches) return () => {};
 
@@ -24,27 +22,6 @@ export function startTilt(): () => void {
     cancelAnimationFrame(frame);
     frame = requestAnimationFrame(() => write(x, y));
   };
-
-  const orientation = isTelegram && tg?.isVersionAtLeast('8.0') ? tg.DeviceOrientation : undefined;
-  const app = tg;
-  if (orientation && app) {
-    const onChange = () => {
-      const t = tiltFromOrientation(orientation.beta, orientation.gamma);
-      schedule(t.x, t.y);
-    };
-    const onVisibility = () => {
-      if (document.visibilityState === 'hidden') orientation.stop();
-      else orientation.start({ refresh_rate: 50 });
-    };
-    app.onEvent('deviceOrientationChanged', onChange);
-    document.addEventListener('visibilitychange', onVisibility);
-    orientation.start({ refresh_rate: 50 });
-    return () => {
-      app.offEvent('deviceOrientationChanged', onChange);
-      document.removeEventListener('visibilitychange', onVisibility);
-      orientation.stop();
-    };
-  }
 
   const onPointer = (e: PointerEvent) => {
     if (e.pointerType !== 'mouse') return;

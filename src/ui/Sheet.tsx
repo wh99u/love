@@ -36,7 +36,7 @@ export function Sheet({ children, onClose, depth }: SheetProps) {
         ref={panel}
         role="dialog"
         aria-modal="true"
-        className="sheet glass glass--strong"
+        className="sheet glass glass--strong glass--blur"
         initial={{ y: '100%' }}
         animate={{ y: 0, scale: depth ? 0.94 : 1 }}
         exit={{ y: '100%' }}

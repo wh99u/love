@@ -10,7 +10,7 @@ import { Pressable } from '../../ui/Pressable';
 import { openSheet } from '../../ui/sheets';
 import { toast } from '../../ui/Toast';
 
-const HOURS = [8, 10, 11, 12, 24];
+const HOURS = [8, 9, 10, 11, 12, 24];
 
 function ShiftForm({ date: initial, close }: { date: string; close: () => void }) {
   const [date, setDate] = useState(initial);

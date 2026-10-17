@@ -100,25 +100,21 @@
   aspect-ratio: 1;
   border-radius: 50%;
   opacity: 0.55;
-  will-change: transform;
 }
 .amb-1 {
   left: -50%;
   top: -30%;
   background: radial-gradient(closest-side, var(--amb-1), transparent);
-  animation: drift-a 22s ease-in-out infinite alternate;
 }
 .amb-2 {
   right: -60%;
   top: 25%;
   background: radial-gradient(closest-side, var(--amb-2), transparent);
-  animation: drift-b 26s ease-in-out infinite alternate;
 }
 .amb-3 {
   left: -30%;
   bottom: -55%;
   background: radial-gradient(closest-side, var(--amb-3), transparent);
-  animation: drift-c 19s ease-in-out infinite alternate;
 }
 @keyframes drift-a {
   to {
@@ -368,7 +364,6 @@
   left: 0;
   width: 200%;
   height: 100%;
-  animation: wave 2.6s linear infinite;
   opacity: 0.6;
 }
 @keyframes wave {

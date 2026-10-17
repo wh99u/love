@@ -22,7 +22,7 @@ interface TabBarProps {
 export function TabBar({ tab, onChange, onPlus }: TabBarProps) {
   return (
     <nav className="tabbar" aria-label="Разделы">
-      <div className="tabbar-pill glass glass--lens" role="tablist">
+      <div className="tabbar-pill glass glass--blur glass--lens" role="tablist">
         {TABS.map((t) => (
           <button
             key={t.id}

@@ -12,7 +12,7 @@ export function OpsPanel({ spent, total }: { spent: number; total: number }) {
   return (
     <motion.button
       layout
-      className="ops glass glass--strong"
+      className="ops glass glass--strong glass--blur"
       aria-expanded={open}
       onClick={() => {
         haptic('light');

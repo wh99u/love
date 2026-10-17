@@ -48,7 +48,7 @@ export function ToastHost() {
           <motion.div
             key={t.id}
             layout
-            className={`toast glass glass--strong toast--${t.kind}`}
+            className={`toast glass glass--strong glass--blur toast--${t.kind}`}
             initial={{ opacity: 0, y: -24, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -16, scale: 0.95 }}
