@@ -41,16 +41,36 @@ export async function imagesAvailable() {
   }
 }
 
+const listeners = new Set<(id: string) => void>();
+
+/** Fires when a picture arrives later, e.g. from the partner's phone. */
+export function onImage(fn: (id: string) => void) {
+  listeners.add(fn);
+  return () => {
+    listeners.delete(fn);
+  };
+}
+
 /** Stored as bytes + type: Blobs inside IndexedDB were flaky on older iOS. */
 export async function putImage(blob: Blob): Promise<string> {
   const id = uid();
-  const value: Stored = { type: blob.type, buf: await blob.arrayBuffer() };
-  await run('readwrite', (s) => s.put(value, id));
+  await putImageBytes(id, blob.type, await blob.arrayBuffer());
   return id;
 }
 
+/** Saves a picture under a known id (synced pictures keep the id of their record). */
+export async function putImageBytes(id: string, type: string, buf: ArrayBuffer): Promise<void> {
+  const value: Stored = { type, buf };
+  await run('readwrite', (s) => s.put(value, id));
+  listeners.forEach((fn) => fn(id));
+}
+
+export async function getImageBytes(id: string): Promise<Stored | null> {
+  return ((await run('readonly', (s) => s.get(id))) as Stored | undefined) ?? null;
+}
+
 export async function getImageBlob(id: string): Promise<Blob | null> {
-  const v = (await run('readonly', (s) => s.get(id))) as Stored | undefined;
+  const v = await getImageBytes(id);
   return v ? new Blob([v.buf], { type: v.type }) : null;
 }
 

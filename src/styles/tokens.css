@@ -1,27 +1,44 @@
 :root {
-  --bg: #000;
-  --text: #fff;
-  --text-2: rgba(235, 235, 245, 0.6);
-  --text-3: rgba(235, 235, 245, 0.35);
-  --line: rgba(255, 255, 255, 0.12);
+  /* near-black with a burgundy undertone */
+  --bg: #060304;
+  --s1: #120a0b;
+  --s2: #1a0f10;
+  --s3: #241517;
+  --card: linear-gradient(180deg, #170d0e 0%, #0e0809 100%);
+  --card-lit: radial-gradient(90% 70% at 88% -10%, rgba(255, 36, 58, 0.26), rgba(255, 36, 58, 0) 62%), linear-gradient(180deg, #1b0e10 0%, #0f0809 100%);
+  --border: rgba(255, 228, 230, 0.07);
+  --border-2: rgba(255, 228, 230, 0.12);
 
-  --yellow: #ffdd2d;
-  --green: #30d158;
-  --red: #ff453a;
-  --blue: #8ab4ff;
-  --violet: #6e4bff;
+  --text: #fbf6f6;
+  --text-2: rgba(240, 222, 224, 0.6);
+  --text-3: rgba(240, 222, 224, 0.32);
+  --line: rgba(255, 228, 230, 0.08);
+  /* light headings fade from white to warm grey */
+  --text-grad: linear-gradient(180deg, #ffffff 25%, #b9a9ab 100%);
 
-  --r-xl: 36px;
-  --r-lg: 28px;
-  --r-md: 20px;
+  /* the one accent: crimson light */
+  --accent: #ff2b45;
+  --accent-hi: #ff5e70;
+  --accent-deep: #9e0d22;
+  --accent-ink: #fff;
+  --accent-soft: rgba(255, 43, 69, 0.15);
+  --glow: rgba(255, 30, 55, 0.6);
+  --glow-soft: rgba(255, 30, 55, 0.24);
+
+  --yellow: #ffd23f;
+  --green: #3ddc84;
+  --red: #ff4d5e;
+  --blue: #7fa8ff;
+  --violet: #8c6bff;
+
+  --r-xl: 30px;
+  --r-lg: 22px;
+  --r-md: 18px;
+  --r-sm: 14px;
   --r-pill: 999px;
 
-  --glass-bg: rgba(255, 255, 255, 0.06);
-  --glass-bg-strong: rgba(255, 255, 255, 0.1);
-  --glass-blur: blur(18px) saturate(160%);
-
-  --tilt-x: 0;
-  --tilt-y: 0;
+  --float-bg: rgba(20, 11, 12, 0.8);
+  --float-blur: blur(20px) saturate(140%);
 
   /* Telegram safe areas, overwritten from lib/telegram.ts */
   --sat: env(safe-area-inset-top, 0px);
@@ -29,11 +46,10 @@
   --csat: 0px;
   --top-inset: calc(var(--sat) + var(--csat));
 
-  --font: -apple-system, 'SF Pro Text', 'SF Pro Display', system-ui, 'Segoe UI', Roboto, sans-serif;
-  /* SF Pro Rounded on Apple devices: the friendly numeral face of the app */
-  --font-round: ui-rounded, 'SF Pro Rounded', -apple-system, system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font: 'Inter Variable', -apple-system, 'SF Pro Text', system-ui, 'Segoe UI', Roboto, sans-serif;
   --nav-h: 64px;
   --nav-gap: calc(12px + max(var(--sab), 8px));
   --screen-bottom: calc(var(--nav-h) + var(--nav-gap) + 28px);
-  --ease-out: cubic-bezier(0.2, 0.9, 0.2, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
 }

@@ -6,11 +6,12 @@ import { kf, monthAccruals } from '../../lib/money';
 import { visible } from '../../lib/records';
 import { haptic } from '../../lib/telegram';
 import { cx } from '../../ui/cx';
-import { Glass } from '../../ui/Glass';
+import { Surface } from '../../ui/Surface';
 import { Icon } from '../../ui/Icon';
 import { springs } from '../../ui/motion';
 import { Pressable } from '../../ui/Pressable';
 import { Ring } from '../../ui/Ring';
+import { rise } from '../../ui/rise';
 import { openDay } from './DaySheet';
 import { openPlanForm } from './forms';
 import './calendar.css';
@@ -38,17 +39,17 @@ export function CalendarScreen({ selected, onSelect }: { selected: string; onSel
 
   return (
     <div className="screen cal">
-      <div className="rings">
-        <Glass className="ring-card" flat>
-          <Ring value={monthTasks.length ? (done / monthTasks.length) * 100 : 0} color="var(--yellow)">
+      <div className="rings rise">
+        <Surface className="ring-card">
+          <Ring value={monthTasks.length ? (done / monthTasks.length) * 100 : 0} color="var(--accent)" glow>
             {done}/{monthTasks.length}
           </Ring>
           <span className="ring-text">
             <b>Выполнено</b>
             <span className="t-cap">задач</span>
           </span>
-        </Glass>
-        <Pressable className="ring-card glass glass--flat" scale={0.97} onPress={openPlanForm}>
+        </Surface>
+        <Pressable className="ring-card surface" scale={0.97} onPress={openPlanForm}>
           <Ring value={plan ? Math.min(100, (monthShifts.length / plan) * 100) : 0} color="var(--green)">
             {monthShifts.length}/{plan}
           </Ring>
@@ -59,14 +60,14 @@ export function CalendarScreen({ selected, onSelect }: { selected: string; onSel
         </Pressable>
       </div>
 
-      <div className="cal-head">
-        <Pressable className="icon-btn glass" aria-label="Предыдущий месяц" onPress={() => shift(-1)}>
+      <div className="cal-head rise" style={rise(1)}>
+        <Pressable className="icon-btn surface" aria-label="Предыдущий месяц" onPress={() => shift(-1)}>
           <Icon name="back" size={20} stroke={2.2} />
         </Pressable>
         <AnimatePresence mode="popLayout" initial={false} custom={dir}>
           <motion.h2
             key={ym}
-            className="t-h2"
+            className="t-h2 grad-text"
             initial={{ opacity: 0, y: dir * 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: dir * -10 }}
@@ -75,12 +76,12 @@ export function CalendarScreen({ selected, onSelect }: { selected: string; onSel
             {capital(fmtMonth(ym))}
           </motion.h2>
         </AnimatePresence>
-        <Pressable className="icon-btn glass" aria-label="Следующий месяц" onPress={() => shift(1)}>
+        <Pressable className="icon-btn surface" aria-label="Следующий месяц" onPress={() => shift(1)}>
           <Icon name="chevron" size={20} stroke={2.2} />
         </Pressable>
       </div>
 
-      <div className="week">
+      <div className="week rise" style={rise(2)}>
         {WEEK.map((d) => (
           <span key={d}>{d}</span>
         ))}
@@ -130,7 +131,7 @@ export function CalendarScreen({ selected, onSelect }: { selected: string; onSel
         </motion.div>
       </AnimatePresence>
 
-      <div className="legend t-cap">
+      <div className="legend t-cap rise" style={rise(4)}>
         <span>
           <Icon name="sun" size={14} className="day-sun" /> дневная
         </span>

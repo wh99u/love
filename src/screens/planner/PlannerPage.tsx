@@ -5,14 +5,15 @@ import { addMonths, fmtMonth, monthName, ymKey } from '../../lib/dates';
 import { budgetSummary, rub } from '../../lib/money';
 import { visible } from '../../lib/records';
 import { haptic } from '../../lib/telegram';
-import { Ambient } from '../../ui/Ambient';
 import { AnimatedNumber } from '../../ui/AnimatedNumber';
 import { Donut } from '../../ui/Donut';
-import { Glass } from '../../ui/Glass';
+import { Surface } from '../../ui/Surface';
+import { Glow } from '../../ui/Glow';
+import { rise } from '../../ui/rise';
 import { Icon } from '../../ui/Icon';
 import { springs } from '../../ui/motion';
 import { Page } from '../../ui/Page';
-import { ProgressLiquid } from '../../ui/ProgressLiquid';
+import { Progress } from '../../ui/Progress';
 import { Pressable } from '../../ui/Pressable';
 import { openCategory } from './CategorySheet';
 import { openCategoryForm, openIncomeForm, openSpendForm } from './forms';
@@ -52,7 +53,7 @@ export function PlannerPage({ onBack }: { onBack: () => void }) {
       onBack={onBack}
       overlay={
         <>
-          <Ambient colors={['#2a1f5a', '#13284a', '#2a1630']} />
+          <Glow spot={{ x: 50, y: 26, size: 100, strength: 1 }} />
           {hasCats && (
             <Pressable className="fab" feedback="medium" scale={0.92} onPress={() => openSpendForm(ym, undefined, hasCats)}>
               <Icon name="plus" size={22} stroke={2.6} />
@@ -62,8 +63,8 @@ export function PlannerPage({ onBack }: { onBack: () => void }) {
         </>
       }
     >
-      <div className="month-switch">
-        <Pressable className="icon-btn glass" aria-label="Предыдущий месяц" onPress={() => shift(-1)}>
+      <div className="month-switch rise">
+        <Pressable className="icon-btn surface" aria-label="Предыдущий месяц" onPress={() => shift(-1)}>
           <Icon name="back" size={20} stroke={2.2} />
         </Pressable>
         <AnimatePresence mode="popLayout" initial={false} custom={dir}>
@@ -79,15 +80,15 @@ export function PlannerPage({ onBack }: { onBack: () => void }) {
             {capital(fmtMonth(ym))}
           </motion.h2>
         </AnimatePresence>
-        <Pressable className="icon-btn glass" aria-label="Следующий месяц" onPress={() => shift(1)}>
+        <Pressable className="icon-btn surface" aria-label="Следующий месяц" onPress={() => shift(1)}>
           <Icon name="chevron" size={20} stroke={2.2} />
         </Pressable>
       </div>
 
       {!hasCats ? (
-        <Glass className="plan-empty">
+        <Surface className="plan-empty surface--lit rise" style={rise(1)}>
           <span className="plan-empty-icon">
-            <Icon name="pie" size={30} />
+            <Icon name="pie" size={30} fill />
           </span>
           <p className="t-h2">Распишите {monthName(ym)}</p>
           <p className="t-sub">Укажите доход и разделите его по категориям: сколько на жильё, еду, транспорт и мечту.</p>
@@ -103,42 +104,42 @@ export function PlannerPage({ onBack }: { onBack: () => void }) {
           <Pressable className="btn btn--ghost" onPress={() => openCategoryForm(ym)}>
             Создать свою категорию
           </Pressable>
-        </Glass>
+        </Surface>
       ) : (
         <>
-          <div className="plan-hero">
+          <div className="plan-hero rise" style={rise(1)}>
             <Donut segments={s.cats.map((c) => ({ id: c.cat.id, value: c.cat.limit, fill: c.cat.limit ? c.spent / c.cat.limit : 0, color: c.over ? '#FF453A' : c.cat.color }))}>
               <span className="donut-text">
                 <span className="t-cap">{s.left < 0 ? 'Перерасход' : 'Осталось'}</span>
-                <AnimatedNumber value={Math.abs(s.left)} format={rub} className={`donut-sum money ${s.left < 0 ? 'neg' : ''}`} />
+                <AnimatedNumber value={Math.abs(s.left)} format={rub} className={`donut-sum money ${s.left < 0 ? 'neg' : 't-display'}`} />
                 <span className="t-cap">из {rub(s.allocated)}</span>
               </span>
             </Donut>
             {isCurrent && s.perDay !== null && (
-              <p className="per-day glass glass--flat">
+              <p className="per-day pill">
                 Можно тратить <b className="money">~{rub(s.perDay)}</b> в день, до конца месяца {s.daysLeft} дн.
               </p>
             )}
           </div>
 
-          <Pressable className="income-card glass" scale={0.98} onPress={() => openIncomeForm(ym)}>
+          <Pressable className="income-card surface surface--lit rise" style={rise(2)} scale={0.98} onPress={() => openIncomeForm(ym)}>
             <span className="income-row">
               <span className="t-sub">Доход на месяц</span>
               <b className="money income-sum">{rub(s.income)}</b>
             </span>
-            <ProgressLiquid value={s.income > 0 ? (s.allocated / s.income) * 100 : 0} color={s.free < 0 ? 'var(--red)' : 'var(--violet)'} />
+            <Progress value={s.income > 0 ? (s.allocated / s.income) * 100 : 0} color={s.free < 0 ? 'var(--red)' : 'var(--accent)'} glow />
             <span className="income-row t-cap">
               <span>Распределено {rub(s.allocated)}</span>
               <span className={s.free < 0 ? 'neg' : ''}>{s.free < 0 ? `Больше дохода на ${rub(-s.free)}` : `Свободно ${rub(s.free)}`}</span>
             </span>
           </Pressable>
 
-          <div className="cats">
+          <div className="cats rise" style={rise(3)}>
             {s.cats.map((c, i) => (
               <motion.div key={c.cat.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03 * i }}>
-                <Pressable className="cat-row glass glass--solid" scale={0.98} onPress={() => openCategory(ym, c.cat.id)}>
+                <Pressable className="cat-row surface" scale={0.98} onPress={() => openCategory(ym, c.cat.id)}>
                   <span className="cat-icon" style={{ background: `${c.cat.color}26`, color: c.cat.color }}>
-                    <Icon name={c.cat.icon} size={22} />
+                    <Icon name={c.cat.icon} size={22} fill />
                   </span>
                   <span className="cat-main">
                     <span className="cat-top">
@@ -147,7 +148,7 @@ export function PlannerPage({ onBack }: { onBack: () => void }) {
                         {rub(c.spent)} <span className="hint">/ {rub(c.cat.limit)}</span>
                       </span>
                     </span>
-                    <ProgressLiquid value={Math.min(100, c.pct)} color={c.over ? 'var(--red)' : c.cat.color} height={8} />
+                    <Progress value={Math.min(100, c.pct)} color={c.over ? 'var(--red)' : c.cat.color} height={8} />
                   </span>
                 </Pressable>
               </motion.div>

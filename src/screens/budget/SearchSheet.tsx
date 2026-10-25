@@ -22,7 +22,7 @@ function SearchSheet({ onPick, close }: { onPick: (h: SearchHit) => void; close:
 
   return (
     <div className="search-sheet">
-      <label className="search-field glass glass--flat">
+      <label className="search-field surface">
         <Icon name="search" size={20} />
         <input autoFocus className="search-input" placeholder="Покупки, задачи, суммы" value={q} onChange={(e) => setQ(e.target.value)} enterKeyHint="search" />
       </label>

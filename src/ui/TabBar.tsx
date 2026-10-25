@@ -22,23 +22,28 @@ interface TabBarProps {
 export function TabBar({ tab, onChange, onPlus }: TabBarProps) {
   return (
     <nav className="tabbar" aria-label="Разделы">
-      <div className="tabbar-pill glass glass--blur glass--lens" role="tablist">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            role="tab"
-            aria-selected={tab === t.id}
-            className={`tab ${tab === t.id ? 'tab--on' : ''}`}
-            onClick={() => {
-              if (t.id !== tab) haptic('selection');
-              onChange(t.id);
-            }}
-          >
-            {tab === t.id && <motion.span layoutId="tab-drop" className="tab-drop" transition={springs.bouncy} />}
-            <Icon name={t.icon} size={24} />
-            <span className="tab-label">{t.label}</span>
-          </button>
-        ))}
+      <div className="tabbar-pill surface surface--float" role="tablist">
+        {TABS.map((t) => {
+          const on = tab === t.id;
+          return (
+            <button
+              key={t.id}
+              role="tab"
+              aria-selected={on}
+              className={`tab ${on ? 'tab--on' : ''}`}
+              onClick={() => {
+                if (!on) haptic('selection');
+                onChange(t.id);
+              }}
+            >
+              {on && <motion.span layoutId="tab-drop" className="tab-drop" transition={springs.bouncy} />}
+              <motion.span key={on ? 'on' : 'off'} initial={on ? { scale: 0.7 } : false} animate={{ scale: 1 }} transition={springs.bouncy} style={{ position: 'relative', zIndex: 1, display: 'grid' }}>
+                <Icon name={t.icon} size={24} fill={on} />
+              </motion.span>
+              <span className="tab-label">{t.label}</span>
+            </button>
+          );
+        })}
       </div>
       <Pressable className="tabbar-plus" aria-label="Добавить" feedback="medium" scale={0.88} onPress={onPlus}>
         <Icon name="plus" size={26} stroke={2.4} />

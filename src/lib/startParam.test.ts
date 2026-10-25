@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { launchKey, parseStartParam } from './startParam';
+import { launchKey, parseJoinParam, parseStartParam } from './startParam';
 
 describe('parseStartParam', () => {
   test('amount with a bank', () => {
@@ -21,5 +21,14 @@ describe('launchKey', () => {
     expect(launchKey('1760000000', 'inc_5')).toBe('1760000000:inc_5');
     expect(launchKey(undefined, 'inc_5')).toBe('na:inc_5');
     expect(launchKey(null, 'inc_5')).toBe('na:inc_5');
+  });
+});
+
+describe('parseJoinParam', () => {
+  test('a 20-character space id', () => {
+    expect(parseJoinParam('join_Ab3dEf7hJk2mNp4qRs5t')).toEqual({ kind: 'join', space: 'Ab3dEf7hJk2mNp4qRs5t' });
+  });
+  test.each(['join_short', 'join_Ab3dEf7hJk2mNp4qRs5t_', 'inc_500', 'join_Ab3dEf7hJk2mNp4qRs5-', null])('rejects %s', (bad) => {
+    expect(parseJoinParam(bad)).toBeNull();
   });
 });

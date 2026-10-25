@@ -9,15 +9,6 @@
 .month-name {
   text-align: center;
 }
-.icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  --glass-r: 22px;
-  display: grid;
-  place-items: center;
-  flex: none;
-}
 
 .plan-hero {
   display: flex;
@@ -33,18 +24,20 @@
   gap: 4px;
 }
 .donut-sum {
-  font: 700 32px/1.05 var(--font-round);
-  letter-spacing: -0.03em;
+  font-size: 34px;
 }
 .per-day {
-  --glass-r: 18px;
-  padding: 10px 16px;
-  font: 400 14px/1.3 var(--font);
-  color: var(--text-2);
+  display: block;
+  height: auto;
+  min-height: 32px;
+  padding: 8px 14px;
+  white-space: normal;
   text-align: center;
+  line-height: 1.3;
 }
 .per-day b {
   color: #fff;
+  font-weight: 500;
 }
 
 .income-card {
@@ -52,8 +45,8 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 16px 18px;
-  --glass-r: 24px;
+  padding: 18px;
+  --surface-r: 24px;
   text-align: left;
   margin-bottom: 14px;
 }
@@ -64,7 +57,8 @@
   gap: 10px;
 }
 .income-sum {
-  font: 700 22px/1 var(--font-round);
+  font: 300 26px/1 var(--font);
+  letter-spacing: -0.045em;
 }
 
 .cats {
@@ -79,14 +73,14 @@
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  --glass-r: 22px;
+  --surface-r: 20px;
   text-align: left;
 }
 .cat-icon {
   width: 42px;
   height: 42px;
   flex: none;
-  border-radius: 14px;
+  border-radius: 50%;
   display: grid;
   place-items: center;
 }
@@ -109,14 +103,14 @@
   gap: 8px;
 }
 .cat-name {
-  font: 600 16px/1.2 var(--font);
+  font: 500 15.5px/1.2 var(--font);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .cat-sum {
   flex: none;
-  font: 600 14px/1 var(--font-round);
+  font: 450 14px/1 var(--font);
 }
 .cat-sum .hint {
   font-weight: 500;
@@ -144,19 +138,21 @@
   align-items: center;
   text-align: center;
   gap: 8px;
-  padding: 26px 18px 18px;
-  --glass-r: 30px;
+  padding: 28px 18px 18px;
+  --surface-r: 28px;
 }
 .plan-empty-icon {
   width: 64px;
   height: 64px;
-  border-radius: 22px;
+  border-radius: 50%;
   display: grid;
   place-items: center;
   color: #fff;
-  margin-bottom: 6px;
-  background: radial-gradient(120% 120% at 30% 20%, #8f74ff, #5b3bf0 55%, #3a1fb0);
-  box-shadow: 0 10px 30px rgba(91, 59, 240, 0.4);
+  margin-bottom: 8px;
+  background: radial-gradient(70% 70% at 50% 35%, #ff4a60, var(--accent) 60%, #b10f25);
+  box-shadow:
+    0 0 0 8px rgba(255, 43, 69, 0.1),
+    0 0 40px -6px var(--glow);
 }
 .plan-empty .t-sub {
   max-width: 290px;
@@ -173,10 +169,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font: 600 17px/1 var(--font);
-  color: #000;
-  background: var(--yellow);
-  box-shadow: 0 12px 30px rgba(255, 221, 45, 0.28);
+  font: 550 16px/1 var(--font);
+  color: #14080a;
+  background: #fff;
+  box-shadow:
+    14px 0 30px -12px var(--glow),
+    0 14px 34px -12px var(--glow);
   z-index: 5;
 }
 
@@ -190,10 +188,11 @@
 .pick-icon {
   width: 42px;
   height: 42px;
-  border-radius: 14px;
+  border-radius: 50%;
   display: grid;
   place-items: center;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 240, 240, 0.05);
+  box-shadow: inset 0 0 0 1px var(--border);
   transition: background 0.2s;
 }
 .pick-color {

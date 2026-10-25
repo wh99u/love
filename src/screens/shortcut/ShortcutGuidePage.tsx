@@ -2,35 +2,19 @@ import { motion } from 'motion/react';
 import { useState, type ReactNode } from 'react';
 import { actions, useStore } from '../../lib/appStore';
 import { SHORTCUT_PATTERN, shortcutUrl } from '../../lib/shortcut';
-import { haptic } from '../../lib/telegram';
-import { Glass } from '../../ui/Glass';
+import { Surface } from '../../ui/Surface';
 import { Icon } from '../../ui/Icon';
 import { Page } from '../../ui/Page';
 import { Pressable } from '../../ui/Pressable';
-import { toast } from '../../ui/Toast';
+import { copyText } from '../../ui/copy';
 import { openTopUp } from '../budget/TopUpSheet';
 import './shortcut.css';
-
-async function copy(text: string) {
-  try {
-    await navigator.clipboard.writeText(text);
-  } catch {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    ta.remove();
-  }
-  haptic('success');
-  toast('Скопировано', 'success');
-}
 
 function CopyBox({ text, label }: { text: string; label: string }) {
   return (
     <div className="copybox">
       <code>{text}</code>
-      <Pressable className="copybox-btn" feedback={false} onPress={() => copy(text)} aria-label={label}>
+      <Pressable className="copybox-btn" feedback={false} onPress={() => copyText(text)} aria-label={label}>
         <Icon name="copy" size={18} />
         Скопировать
       </Pressable>
@@ -41,7 +25,7 @@ function CopyBox({ text, label }: { text: string; label: string }) {
 function Step({ n, title, children, warn }: { n: number; title: string; children?: ReactNode; warn?: boolean }) {
   return (
     <motion.li className={`step ${warn ? 'step--warn' : ''}`} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: n * 0.04 }}>
-      <span className="step-n">{n}</span>
+      <span className="step-n">{String(n).padStart(2, '0')}</span>
       <div className="step-body">
         <p className="t-h3">{title}</p>
         {children}
@@ -57,15 +41,15 @@ export function ShortcutGuidePage({ onBack }: { onBack: () => void }) {
 
   return (
     <Page title="Автопополнение" onBack={onBack}>
-      <Glass className="guide-intro">
+      <Surface className="guide-intro surface--lit">
         <span className="guide-intro-icon">
-          <Icon name="bolt" size={26} />
+          <Icon name="bolt" size={24} fill />
         </span>
         <p className="t-sub">
           iPhone не даёт приложениям читать уведомления банков. Поэтому команда делает снимок экрана с уведомлением, находит в нём сумму и открывает «Мой план» с
           готовым пополнением. Останется нажать «Зачислить».
         </p>
-      </Glass>
+      </Surface>
 
       <label className="field guide-link">
         <span>Ссылка на бота с этим приложением</span>
@@ -118,10 +102,10 @@ export function ShortcutGuidePage({ onBack }: { onBack: () => void }) {
         </Step>
       </ol>
 
-      <Glass className="guide-use">
+      <Surface className="guide-use">
         <p className="t-h3">Как пользоваться</p>
         <p className="t-sub">Пришло уведомление о зачислении — дважды коснитесь задней крышки iPhone, пока баннер на экране. Можно и из Центра уведомлений.</p>
-      </Glass>
+      </Surface>
 
       <Pressable className="btn btn--ghost" onPress={() => openTopUp(undefined, 5000, 'test')}>
         <Icon name="check" size={20} />

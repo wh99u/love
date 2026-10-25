@@ -1,0 +1,170 @@
+.sync-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 14px;
+  padding: 18px 8px 22px;
+}
+.sync-hero .t-title {
+  max-width: 320px;
+}
+.sync-lead {
+  max-width: 320px;
+}
+/* the red mark, lit like the logo badge in the reference */
+.sync-badge {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: radial-gradient(70% 70% at 50% 35%, #ff4a60, var(--accent) 60%, #b10f25);
+  box-shadow:
+    0 0 0 8px rgba(255, 43, 69, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.14) inset,
+    0 0 50px -6px var(--glow);
+}
+.sync-avatars .avatar {
+  width: 72px;
+  height: 72px;
+  font-size: 28px;
+}
+.sync-avatars .avatars--pair .avatar--partner {
+  margin-left: -22px;
+  box-shadow: 0 0 0 4px var(--bg);
+}
+.sync-avatars .avatar-dot {
+  width: 16px;
+  height: 16px;
+  border-width: 3px;
+}
+.sync-status i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-3);
+}
+.sync-status--online i {
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+}
+.sync-status--connecting i {
+  background: var(--yellow);
+}
+.sync-status--error i {
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--glow);
+}
+.sync-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px;
+  margin-bottom: 12px;
+}
+.sync-card .btn {
+  margin-top: 4px;
+}
+.sync-card .field {
+  margin: 4px 0 0;
+}
+.sync-steps {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 4px 0;
+  font: 400 14px/1.4 var(--font);
+  color: var(--text-2);
+}
+.sync-steps li {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 6px;
+}
+.sync-steps b {
+  font: 300 20px/1 var(--font);
+  letter-spacing: -0.04em;
+  color: var(--text-3);
+}
+.sync-config {
+  min-height: 120px;
+  font: 400 13px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.sync-code {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 6px 6px 16px;
+  border-radius: var(--r-pill);
+  background: rgba(255, 240, 240, 0.04);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+.sync-code code {
+  flex: 1;
+  font: 500 14px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.02em;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sync-copy {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 240, 240, 0.07);
+  flex: none;
+}
+.sync-member {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sync-member-face {
+  width: 42px;
+  height: 42px;
+  font-size: 17px;
+}
+.sync-member-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.sync-member-text b {
+  font-weight: 500;
+}
+.sync-error,
+.sync-foot {
+  text-align: center;
+  padding: 6px 12px;
+}
+.join {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 8px;
+}
+.join .sync-badge {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 14px;
+}
+.join-title {
+  margin-bottom: 6px;
+}
+.join-text {
+  margin-bottom: 10px;
+  max-width: 330px;
+}
+.join-note {
+  margin: 6px 6px 4px;
+}

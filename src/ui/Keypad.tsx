@@ -10,7 +10,7 @@ interface KeypadProps {
   onChange: (v: string) => void;
 }
 
-/** Big glass number pad; amounts are typed without the system keyboard covering the sheet. */
+/** Big number pad; amounts are typed without the system keyboard covering the sheet. */
 export function Keypad({ value, onChange }: KeypadProps) {
   // Fast double taps land before React re-renders, so keep the latest value here.
   const latest = useRef(value);
@@ -24,7 +24,7 @@ export function Keypad({ value, onChange }: KeypadProps) {
       {KEYS.map((k) => (
         <Pressable
           key={k}
-          className="keypad-key glass glass--flat glass--solid"
+          className="keypad-key"
           feedback="selection"
           scale={0.9}
           aria-label={k === '⌫' ? 'Стереть' : k}

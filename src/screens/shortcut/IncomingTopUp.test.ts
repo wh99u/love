@@ -64,4 +64,14 @@ describe('handleLaunch', () => {
     handleLaunch();
     expect(openTopUp).not.toHaveBeenCalled();
   });
+
+  test('an invite link asks to join once', () => {
+    const onJoin = vi.fn();
+    launch.param = 'join_Ab3dEf7hJk2mNp4qRs5t';
+    handleLaunch(onJoin);
+    handleLaunch(onJoin);
+    expect(onJoin).toHaveBeenCalledTimes(1);
+    expect(onJoin).toHaveBeenCalledWith('Ab3dEf7hJk2mNp4qRs5t');
+    expect(openTopUp).not.toHaveBeenCalled();
+  });
 });

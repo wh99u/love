@@ -24,12 +24,12 @@ export function Page({ title, onBack, children, action, overlay }: PageProps) {
       initial={{ x: '100%' }}
       animate={{ x: 0 }}
       exit={{ x: '100%' }}
-      transition={springs.snappy}
+      transition={springs.page}
       aria-label={title}
     >
       <header className="page-head">
         {!backButton.available ? (
-          <Pressable className="page-back glass" aria-label="Назад" onPress={onBack}>
+          <Pressable className="page-back surface" aria-label="Назад" onPress={onBack}>
             <Icon name="back" size={22} stroke={2.2} />
           </Pressable>
         ) : (

@@ -11,7 +11,7 @@ import { Pressable } from '../../ui/Pressable';
 export function TaskCard({ task }: { task: Task }) {
   const [open, setOpen] = useState(false);
   return (
-    <motion.div layout className={`task glass glass--flat glass--solid ${task.done ? 'task--done' : ''}`} exit={{ opacity: 0, x: -60 }} transition={springs.snappy}>
+    <motion.div layout className={`task surface surface--raised ${task.done ? 'task--done' : ''}`} exit={{ opacity: 0, x: -60 }} transition={springs.snappy}>
       <button
         type="button"
         className="task-check"
@@ -27,7 +27,7 @@ export function TaskCard({ task }: { task: Task }) {
           <motion.path
             d="M5 12.5l4.5 4.5L19 7"
             fill="none"
-            stroke="#000"
+            stroke="#fff"
             strokeWidth={3}
             strokeLinecap="round"
             strokeLinejoin="round"

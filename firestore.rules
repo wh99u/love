@@ -1,0 +1,23 @@
+rules_version = '2';
+
+// «Мой план»: shared plans for two. A space id is 20 random characters and works
+// like a password: knowing it gives access, nobody can list the spaces.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /spaces/{spaceId} {
+      allow get, create, update: if spaceId.size() == 20;
+
+      // Records: an older copy can never overwrite a newer one.
+      match /recs/{key} {
+        allow read: if spaceId.size() == 20;
+        allow create: if spaceId.size() == 20 && request.resource.data.u is number;
+        allow update: if spaceId.size() == 20 && request.resource.data.u is number && request.resource.data.u >= resource.data.u;
+      }
+
+      // Pictures of purchases and the car, base64, under 1 MiB each.
+      match /imgs/{id} {
+        allow read, create, update: if spaceId.size() == 20;
+      }
+    }
+  }
+}

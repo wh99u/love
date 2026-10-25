@@ -4,11 +4,12 @@ import { dayKey, monthName } from '../../lib/dates';
 import { dreamProgress, rub } from '../../lib/money';
 import { visible } from '../../lib/records';
 import { AnimatedNumber } from '../../ui/AnimatedNumber';
-import { Glass } from '../../ui/Glass';
+import { Surface } from '../../ui/Surface';
 import { Icon } from '../../ui/Icon';
 import { springs } from '../../ui/motion';
-import { ProgressLiquid } from '../../ui/ProgressLiquid';
+import { Progress } from '../../ui/Progress';
 import { Pressable } from '../../ui/Pressable';
+import { rise } from '../../ui/rise';
 import { useImage } from '../../ui/useImage';
 import { openDreamForm } from './DreamForm';
 import { PanameraSvg } from './PanameraSvg';
@@ -27,46 +28,48 @@ export function DreamScreen() {
 
   return (
     <div className="screen dream">
-      <Pressable className="dream-card" scale={0.98} onPress={openDreamForm} aria-label="Изменить мечту">
-        <span className="dream-card-glow" />
-        <motion.span className="dream-name" role="heading" aria-level={1} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={springs.soft}>
-          {car.name}
-        </motion.span>
-        <span className="dream-tag glass glass--flat">
-          <Icon name="sparkle" size={18} />
+      <Pressable className="dream-card rise" scale={0.98} onPress={openDreamForm} aria-label="Изменить мечту">
+        <span className="pill dream-tag">
+          <Icon name="sparkle" size={14} />
           Авто мечты
         </span>
+        <motion.span className="dream-name grad-text" role="heading" aria-level={1} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={springs.soft}>
+          {car.name}
+        </motion.span>
         <motion.div
           className="dream-car"
           initial={{ x: 140, rotate: 1.5, opacity: 0 }}
           animate={{ x: 0, rotate: 0, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 120, damping: 16, mass: 0.9 }}
         >
+          <span className="dream-flare" aria-hidden="true">
+            <i />
+          </span>
           {photo ? <img src={photo} alt={car.name} className="dream-photo" /> : <PanameraSvg color={car.color} className="dream-svg" />}
-          <span className="dream-sweep" aria-hidden="true" />
         </motion.div>
+        <span className="dream-floor" aria-hidden="true" />
       </Pressable>
 
       {car.price <= 0 ? (
-        <Glass className="dream-cta">
+        <Surface className="dream-cta surface--lit rise" style={rise(1)}>
           <p className="t-h2">Сколько стоит мечта?</p>
           <p className="t-sub">Укажите цену и срок. Посчитаю, сколько откладывать в день, неделю и месяц.</p>
           <Pressable className="btn btn--primary" onPress={openDreamForm}>
             Указать цену и срок
           </Pressable>
-        </Glass>
+        </Surface>
       ) : (
         <>
-          <Glass className="dream-progress">
+          <Surface className="dream-progress surface--lit rise" style={rise(1)}>
             <div className="dream-progress-top">
-              <span className="t-cap">{reached ? 'Денег на картах хватает' : 'Накоплено'}</span>
-              <span className="dream-pct money">{Math.floor(d.pct)}%</span>
+              <span className="t-eyebrow">{reached ? 'Денег на картах хватает' : 'Накоплено'}</span>
+              <span className="tag">{Math.floor(d.pct)}%</span>
             </div>
             <div className="dream-amount">
-              <AnimatedNumber value={saved} format={rub} className="money dream-saved" />
+              <AnimatedNumber value={saved} format={rub} className="money t-display dream-saved" />
               <span className="t-sub">из {rub(car.price)}</span>
             </div>
-            <ProgressLiquid value={d.pct} height={14} />
+            <Progress value={d.pct} height={6} glow />
             <div className="milestones" aria-label="Вехи">
               {MILESTONES.map((m, i) => (
                 <motion.span
@@ -80,25 +83,25 @@ export function DreamScreen() {
                 </motion.span>
               ))}
             </div>
-          </Glass>
+          </Surface>
 
           {d.perDay !== null && (
-            <div className="pace">
+            <div className="pace rise" style={rise(2)}>
               {[
                 ['В день', d.perDay],
                 ['В неделю', d.perWeek!],
                 ['В месяц', d.perMonth!],
               ].map(([label, v]) => (
-                <Glass key={label as string} className="pace-tile" flat>
-                  <span className="t-cap">{label}</span>
-                  <b className="money">{rub(v as number)}</b>
-                </Glass>
+                <Surface key={label as string} className="pace-tile">
+                  <span className="t-eyebrow">{label}</span>
+                  <b className="money grad-text">{rub(v as number)}</b>
+                </Surface>
               ))}
             </div>
           )}
 
-          <div className="dream-facts">
-            <Glass className="fact" flat>
+          <div className="dream-facts rise" style={rise(3)}>
+            <Surface className="fact">
               <Icon name="clock" size={22} />
               <span className="fact-text">
                 <span className="t-cap">До срока</span>
@@ -112,14 +115,14 @@ export function DreamScreen() {
                         : 'Сегодня'}
                 </b>
               </span>
-            </Glass>
-            <Glass className="fact" flat>
+            </Surface>
+            <Surface className="fact">
               <Icon name="trend" size={22} />
               <span className="fact-text">
                 <span className="t-cap">При текущем темпе</span>
                 <b>{reached ? 'Уже можно' : (forecast ?? 'Нужен доход со смен')}</b>
               </span>
-            </Glass>
+            </Surface>
           </div>
           {d.perDay !== null && <p className="t-cap dream-note">Сумма в день — чтобы успеть к сроку. Темп считается по сменам за последние 30 дней.</p>}
         </>

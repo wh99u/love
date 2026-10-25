@@ -44,6 +44,7 @@ export interface TgWebApp {
     gamma: number;
   };
   openLink(url: string): void;
+  openTelegramLink?(url: string): void;
 }
 
 declare global {
@@ -141,4 +142,18 @@ export function openLink(url: string) {
   const full = /^https?:\/\//i.test(url) ? url : `https://${url}`;
   if (isTelegram && tg) safe(() => tg.openLink(full));
   else window.open(full, '_blank', 'noopener');
+}
+
+/** Opens Telegram's «share to chat» with a link; outside Telegram uses the system share sheet. */
+export function shareLink(url: string, text: string) {
+  const share = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+  if (isTelegram && tg?.openTelegramLink) {
+    safe(() => tg.openTelegramLink!(share));
+    return;
+  }
+  if (typeof navigator !== 'undefined' && navigator.share) {
+    navigator.share({ url, text }).catch(() => {});
+    return;
+  }
+  window.open(share, '_blank', 'noopener');
 }

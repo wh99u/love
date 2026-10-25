@@ -1,0 +1,83 @@
+/* Matte cards: a dark warm fill and a hairline edge. No gloss, no sheen. */
+.surface {
+  position: relative;
+  border-radius: var(--surface-r, var(--r-lg));
+  background: var(--card);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+.surface--raised {
+  background: var(--s2);
+}
+/* The highlighted card: red light falls on its top corner. */
+.surface--lit {
+  background: var(--card-lit);
+  box-shadow:
+    inset 0 0 0 1px var(--border-2),
+    0 18px 50px -24px rgba(255, 30, 55, 0.35);
+}
+/* Floating chrome (tab bar, toasts) sits over content: a dim, blurred backdrop. */
+.surface--float {
+  background: var(--float-bg);
+  -webkit-backdrop-filter: var(--float-blur);
+  backdrop-filter: var(--float-blur);
+  box-shadow:
+    inset 0 0 0 1px var(--border-2),
+    0 16px 40px rgba(0, 0, 0, 0.6);
+}
+/* A thin red light along the top edge. */
+.edge-glow::before {
+  content: '';
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-hi), transparent);
+  pointer-events: none;
+}
+.edge-glow::after {
+  content: '';
+  position: absolute;
+  left: 22%;
+  right: 22%;
+  top: 0;
+  height: 34px;
+  background: radial-gradient(50% 100% at 50% 0%, var(--glow-soft), transparent);
+  pointer-events: none;
+}
+
+/* Light headings: thin, white fading into warm grey. */
+.grad-text {
+  background: var(--text-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Small pill with an icon: «Т-Банк · 48 200 ₽», «Одежда →» */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: var(--r-pill);
+  background: rgba(255, 240, 240, 0.04);
+  box-shadow: inset 0 0 0 1px var(--border-2);
+  font: 500 13px/1 var(--font);
+  color: var(--text-2);
+  white-space: nowrap;
+}
+/* Red tag: «Перерасход», «Вместе» */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 7px;
+  background: rgba(255, 43, 69, 0.14);
+  color: var(--accent-hi);
+  font: 600 11.5px/1 var(--font);
+  white-space: nowrap;
+}

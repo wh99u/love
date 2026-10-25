@@ -4,7 +4,7 @@ import { uid } from './ids';
 import { migrateV3 } from './migrate';
 import { visible } from './records';
 import { templateCategories } from './template';
-import type { Bank, BankCode, BudgetMonth, Buy, Car, Category, Income, Rec, Settings, Shift, Spend, StateV4, Task } from './types';
+import type { Bank, BankCode, BudgetMonth, Buy, BuyList, Car, Category, Income, Rec, Settings, Shift, Spend, StateV4, Task } from './types';
 
 export { visible };
 
@@ -31,7 +31,7 @@ function load(storage: Storage, key: string, opts: StoreOptions, now: number): {
   if (own) {
     try {
       const parsed = JSON.parse(own) as StateV4;
-      if (parsed && parsed.v === 4) return { state: parsed, error: false };
+      if (parsed && parsed.v === 4) return { state: normalize(parsed), error: false };
     } catch {
       /* fall through to legacy / empty */
     }
@@ -51,6 +51,32 @@ function load(storage: Storage, key: string, opts: StoreOptions, now: number): {
   }
   if (opts.seed) return { state: opts.seed(), error: !!own, fresh: true };
   return { state: emptyState(now), error: !!own };
+}
+
+/** Fills collections added after a state was saved. */
+function normalize(s: StateV4): StateV4 {
+  return s.shared.buyLists ? s : { ...s, shared: { ...s.shared, buyLists: [] } };
+}
+
+/** Never older than the previous version: device clocks of two people disagree. */
+const bump = (prev?: number) => Math.max(Date.now(), (prev ?? 0) + 1);
+
+/** A catalog item shipped with the app (public/catalog/items.json). */
+export interface CatalogItem {
+  id: string;
+  title: string;
+  price: number;
+  url?: string;
+  img?: string;
+  tint?: string;
+  list?: string;
+}
+
+/** Same name → same id on every phone, so two imports of one tab collapse into one. */
+export function listIdFor(name: string) {
+  let h = 5381;
+  for (const ch of name.trim().toLowerCase()) h = ((h * 33) ^ ch.codePointAt(0)!) >>> 0;
+  return `l-${h.toString(36)}`;
 }
 
 export function createStore(storage: Storage, key: string, opts: StoreOptions = {}) {
@@ -85,7 +111,7 @@ export function createStore(storage: Storage, key: string, opts: StoreOptions = 
   const personal = (patch: Partial<StateV4['personal']>) => set({ ...state, personal: { ...state.personal, ...patch } });
   const stamp = <T extends object>(x: T) => ({ ...x, updatedAt: Date.now() });
   const patchIn = <T extends Rec>(list: T[], id: string, patch: NoInfer<Partial<T>>): T[] =>
-    list.map((x) => (x.id === id ? { ...x, ...patch, updatedAt: Date.now() } : x));
+    list.map((x) => (x.id === id ? { ...x, ...patch, updatedAt: bump(x.updatedAt) } : x));
   const removeIn = <T extends Rec>(list: T[], id: string) => patchIn(list, id, { deleted: true } as Partial<T>);
 
   const findBudget = (ym: string) => visible(state.shared.budgets).find((b) => b.ym === ym);
@@ -93,14 +119,14 @@ export function createStore(storage: Storage, key: string, opts: StoreOptions = 
   function ensureBudget(ym: string): BudgetMonth {
     const found = findBudget(ym);
     if (found) return found;
-    const created: BudgetMonth = { id: ym, ym, income: 0, cats: [], updatedAt: Date.now() };
+    const created: BudgetMonth = { id: ym, ym, income: 0, cats: [], updatedAt: bump(state.shared.budgets.find((b) => b.id === ym)?.updatedAt) };
     shared({ budgets: [...state.shared.budgets.filter((b) => b.ym !== ym), created] });
     return created;
   }
 
   function updateBudget(ym: string, patch: Partial<Pick<BudgetMonth, 'income' | 'cats'>>) {
     ensureBudget(ym);
-    shared({ budgets: state.shared.budgets.map((b) => (b.ym === ym && !b.deleted ? { ...b, ...patch, updatedAt: Date.now() } : b)) });
+    shared({ budgets: state.shared.budgets.map((b) => (b.ym === ym && !b.deleted ? { ...b, ...patch, updatedAt: bump(b.updatedAt) } : b)) });
   }
 
   const actions = {
@@ -123,7 +149,7 @@ export function createStore(storage: Storage, key: string, opts: StoreOptions = 
         ...state,
         shared: {
           ...state.shared,
-          banks: state.shared.banks.map((b) => (b.id === bankId ? { ...b, sum: b.sum + amount, updatedAt: Date.now() } : b)),
+          banks: state.shared.banks.map((b) => (b.id === bankId ? { ...b, sum: b.sum + amount, updatedAt: bump(b.updatedAt) } : b)),
           incomes: [...state.shared.incomes, income],
         },
         personal: { ...state.personal, settings: { ...state.personal.settings, lastTopUpBankId: bankId } },
@@ -135,7 +161,7 @@ export function createStore(storage: Storage, key: string, opts: StoreOptions = 
       const inc = state.shared.incomes.find((i) => i.id === incomeId && !i.deleted);
       if (!inc) return;
       shared({
-        banks: state.shared.banks.map((b) => (b.id === inc.bankId ? { ...b, sum: b.sum - inc.amount, updatedAt: Date.now() } : b)),
+        banks: state.shared.banks.map((b) => (b.id === inc.bankId ? { ...b, sum: b.sum - inc.amount, updatedAt: bump(b.updatedAt) } : b)),
         incomes: removeIn(state.shared.incomes, incomeId),
       });
     },
@@ -145,13 +171,13 @@ export function createStore(storage: Storage, key: string, opts: StoreOptions = 
       if (!from || !to || from === to || amount <= 0 || amount > from.sum) return false;
       shared({
         banks: state.shared.banks.map((b) =>
-          b.id === fromId ? { ...b, sum: b.sum - amount, updatedAt: Date.now() } : b.id === toId ? { ...b, sum: b.sum + amount, updatedAt: Date.now() } : b,
+          b.id === fromId ? { ...b, sum: b.sum - amount, updatedAt: bump(b.updatedAt) } : b.id === toId ? { ...b, sum: b.sum + amount, updatedAt: bump(b.updatedAt) } : b,
         ),
       });
       return true;
     },
     setCar(patch: Partial<Omit<Car, 'updatedAt'>>) {
-      shared({ car: { ...state.shared.car, ...patch, updatedAt: Date.now() } });
+      shared({ car: { ...state.shared.car, ...patch, updatedAt: bump(state.shared.car.updatedAt) } });
     },
     addBuy(b: Omit<Buy, 'id' | 'updatedAt'>): Buy {
       const buy = stamp({ ...b, id: uid() });
@@ -163,6 +189,68 @@ export function createStore(storage: Storage, key: string, opts: StoreOptions = 
     },
     deleteBuy(id: string) {
       shared({ buys: removeIn(state.shared.buys, id) });
+    },
+    addBuyList(name: string): BuyList {
+      const lists = visible(state.shared.buyLists);
+      const order = lists.length ? Math.max(...lists.map((l) => l.order)) + 1 : 0;
+      const list = stamp({ id: uid(), name: name.trim(), order });
+      shared({ buyLists: [...state.shared.buyLists, list] });
+      return list;
+    },
+    renameBuyList(id: string, name: string) {
+      shared({ buyLists: patchIn(state.shared.buyLists, id, { name: name.trim() }) });
+    },
+    /** Purchases of a removed tab stay, they just show under «Все». */
+    deleteBuyList(id: string) {
+      shared({
+        buyLists: removeIn(state.shared.buyLists, id),
+        buys: state.shared.buys.map((b) => (b.listId === id ? { ...b, listId: undefined, updatedAt: bump(b.updatedAt) } : b)),
+      });
+    },
+    /**
+     * Adds catalog items that were never seen here. Ids are derived from the item, so
+     * both phones importing the same item make one record, and a deleted one stays deleted.
+     */
+    importCatalog(items: CatalogItem[]): number {
+      const buys = [...state.shared.buys];
+      const lists = [...state.shared.buyLists];
+      let added = 0;
+      for (const it of items) {
+        const id = `cat-${it.id}`;
+        if (buys.some((b) => b.id === id)) continue;
+        let listId: string | undefined;
+        const name = it.list?.trim();
+        if (name) {
+          const live = lists.find((l) => !l.deleted && l.name.trim().toLowerCase() === name.toLowerCase());
+          listId = live?.id ?? listIdFor(name);
+          if (!live) {
+            // a tab removed earlier comes back when new things are added to it
+            const i = lists.findIndex((l) => l.id === listId);
+            const order = lists.filter((l) => !l.deleted).reduce((m, l) => Math.max(m, l.order + 1), 0);
+            const rec: BuyList = { id: listId, name, order, updatedAt: bump(lists[i]?.updatedAt) };
+            if (i >= 0) lists[i] = rec;
+            else lists.push(rec);
+          }
+        }
+        buys.push(
+          stamp({
+            id,
+            title: it.title,
+            url: it.url ?? '',
+            price: it.price,
+            ...(it.img ? { src: it.img } : {}),
+            ...(it.tint ? { tint: it.tint } : {}),
+            ...(listId ? { listId } : {}),
+          }),
+        );
+        added++;
+      }
+      if (added) shared({ buys, buyLists: lists });
+      return added;
+    },
+    /** Sync writes merged records as they are, without re-stamping them. */
+    replaceShared(next: StateV4['shared']) {
+      set({ ...state, shared: next });
     },
     ensureBudget,
     updateBudget,

@@ -41,8 +41,8 @@ function AccrualsSheet() {
             title: `${s.type === 'd' ? 'Дневная' : 'Ночная'} смена${s.h ? `, ${s.h} ч` : ''}`,
             amount: s.pay,
             icon: s.type === 'd' ? 'sun' : 'moon',
-            color: s.type === 'd' ? '#ffdd2d' : '#8ab4ff',
-            bg: s.type === 'd' ? 'rgba(255,221,45,.14)' : 'rgba(138,180,255,.14)',
+            color: s.type === 'd' ? 'var(--yellow)' : 'var(--blue)',
+            bg: s.type === 'd' ? 'rgba(255,210,63,.13)' : 'rgba(127,168,255,.13)',
           }))
         : incomes.map((x) => {
             const b = banks.find((bb) => bb.id === x.bankId);

@@ -6,7 +6,7 @@ import { budgetSummary, rub } from '../../lib/money';
 import { visible } from '../../lib/records';
 import { haptic } from '../../lib/telegram';
 import { Icon } from '../../ui/Icon';
-import { ProgressLiquid } from '../../ui/ProgressLiquid';
+import { Progress } from '../../ui/Progress';
 import { Pressable } from '../../ui/Pressable';
 import { openSheet } from '../../ui/sheets';
 import { toast } from '../../ui/Toast';
@@ -46,11 +46,11 @@ function CategorySheet({ ym, catId, close }: { ym: string; catId: string; close:
             <b className={`money ${over ? 'neg' : ''}`}>{rub(spent)}</b> из {rub(cat.limit)}
           </p>
         </div>
-        <Pressable className="icon-btn glass glass--flat" aria-label="Изменить категорию" onPress={() => openCategoryForm(ym, cat)}>
+        <Pressable className="icon-btn surface" aria-label="Изменить категорию" onPress={() => openCategoryForm(ym, cat)}>
           <Icon name="edit" size={20} />
         </Pressable>
       </div>
-      <ProgressLiquid value={Math.min(100, pct)} color={over ? 'var(--red)' : cat.color} height={12} />
+      <Progress value={Math.min(100, pct)} color={over ? 'var(--red)' : cat.color} height={12} />
       <p className="t-cap cat-left">{over ? `Перерасход ${rub(spent - cat.limit)}` : `Осталось ${rub(cat.limit - spent)}`}</p>
 
       <Pressable className="btn btn--primary" onPress={() => openSpendForm(ym, catId)}>

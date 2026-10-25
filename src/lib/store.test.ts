@@ -195,3 +195,58 @@ describe('persistence', () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('purchase tabs and catalog', () => {
+  test('catalog items are imported once, into a tab created by name', () => {
+    const store = fresh();
+    const item = { id: 'wb-1', title: 'Куртка', price: 7990, img: 'catalog/wb-1.webp', list: 'Одежда' };
+    expect(store.actions.importCatalog([item])).toBe(1);
+    expect(store.actions.importCatalog([item])).toBe(0);
+    const s = store.get();
+    expect(visible(s.shared.buyLists).map((l) => l.name)).toEqual(['Одежда']);
+    expect(s.shared.buys[0]).toMatchObject({ id: 'cat-wb-1', src: 'catalog/wb-1.webp', listId: s.shared.buyLists[0].id });
+  });
+
+  test('a deleted catalog item is not brought back', () => {
+    const store = fresh();
+    store.actions.importCatalog([{ id: 'wb-2', title: 'Шапка', price: 900 }]);
+    store.actions.deleteBuy('cat-wb-2');
+    expect(store.actions.importCatalog([{ id: 'wb-2', title: 'Шапка', price: 900 }])).toBe(0);
+    expect(visible(store.get().shared.buys)).toEqual([]);
+  });
+
+  test('the same tab name gives the same id on another phone', () => {
+    const a = fresh();
+    a.actions.importCatalog([{ id: 'x', title: 'Куртка', price: 1, list: 'Одежда' }]);
+    localStorage.clear();
+    const b = fresh();
+    b.actions.importCatalog([{ id: 'x', title: 'Куртка', price: 1, list: ' одежда ' }]);
+    expect(b.get().shared.buyLists[0].id).toBe(a.get().shared.buyLists[0].id);
+  });
+
+  test('items join an existing tab with that name and revive a deleted one', () => {
+    const store = fresh();
+    const mine = store.actions.addBuyList('Одежда');
+    store.actions.importCatalog([{ id: 'a', title: 'Куртка', price: 1, list: 'одежда' }]);
+    expect(store.get().shared.buys[0].listId).toBe(mine.id);
+    store.actions.deleteBuyList(mine.id);
+    expect(store.get().shared.buys[0].listId).toBeUndefined();
+    store.actions.importCatalog([{ id: 'b', title: 'Шарф', price: 1, list: 'Одежда' }]);
+    expect(visible(store.get().shared.buyLists).map((l) => l.name)).toEqual(['Одежда']);
+  });
+
+  test('edits never get an older timestamp than the record had', () => {
+    const store = fresh();
+    const b = store.actions.addBank('tbank', 1);
+    store.actions.replaceShared({ ...store.get().shared, banks: [{ ...b, updatedAt: Date.now() + 60_000 }] });
+    store.actions.updateBank(b.id, { sum: 2 });
+    expect(store.get().shared.banks[0].updatedAt).toBeGreaterThan(Date.now() + 60_000);
+  });
+
+  test('old saved states get an empty tab list', () => {
+    const old = fresh().get();
+    const { buyLists: _drop, ...sharedWithout } = old.shared;
+    localStorage.setItem(KEY, JSON.stringify({ ...old, shared: sharedWithout }));
+    expect(fresh().get().shared.buyLists).toEqual([]);
+  });
+});

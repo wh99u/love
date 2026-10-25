@@ -115,21 +115,11 @@ export function PanameraSvg({ color = '#1c1c1e', className }: { color?: string; 
           <stop offset="0" stopColor="#eef0f3" />
           <stop offset="1" stopColor="#8e9299" />
         </linearGradient>
-        <linearGradient id={`${id}-fade`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#fff" stopOpacity="0.16" />
-          <stop offset="0.4" stopColor="#fff" stopOpacity="0" />
-        </linearGradient>
-        <mask id={`${id}-mirror`}>
-          <rect x="0" y="262" width="800" height="60" fill={`url(#${id}-fade)`} />
-        </mask>
         <filter id={`${id}-blur`} x="-10%" y="-200%" width="120%" height="500%">
           <feGaussianBlur stdDeviation="7" />
         </filter>
       </defs>
       <ellipse cx="408" cy="262" rx="370" ry="11" fill="#000" opacity="0.75" filter={`url(#${id}-blur)`} />
-      <g mask={`url(#${id}-mirror)`}>
-        <g transform="translate(0 524) scale(1 -1)">{car}</g>
-      </g>
       {car}
     </svg>
   );

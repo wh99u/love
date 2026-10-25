@@ -6,6 +6,19 @@ export interface IncomeLaunch {
   bank?: BankCode;
 }
 
+/** Invite into a shared plan: `join_<space id>`. */
+export interface JoinLaunch {
+  kind: 'join';
+  space: string;
+}
+
+const JOIN = /^join_([A-Za-z0-9]{20})$/;
+
+export function parseJoinParam(p: string | null | undefined): JoinLaunch | null {
+  const m = p ? JOIN.exec(p) : null;
+  return m ? { kind: 'join', space: m[1] } : null;
+}
+
 const INC = /^inc_(\d{1,8})(?:_(alfa|sber|vtb|tbank|ozon))?$/;
 const MAX = 10_000_000;
 

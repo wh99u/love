@@ -16,12 +16,15 @@ export function extractAmount(text: string): number | null {
   return n > 0 ? n : null;
 }
 
-/** Bot link (url, t.me/…, @name or name) → the URL the shortcut opens, amount appended after it. */
-export function shortcutUrl(botLink: string): string {
+/** Bot link (url, t.me/…, @name or name) → a link that opens the app with `startapp=<param>`. */
+export function startAppUrl(botLink: string, param: string): string {
   let link = botLink.trim();
   if (!link) return '';
   if (link.startsWith('@')) link = `https://t.me/${link.slice(1)}`;
   else if (/^t\.me\//i.test(link)) link = `https://${link}`;
   else if (/^\w+$/.test(link)) link = `https://t.me/${link}`;
-  return `${link}${link.includes('?') ? '&' : '?'}startapp=inc_`;
+  return `${link}${link.includes('?') ? '&' : '?'}startapp=${param}`;
 }
+
+/** The URL the shortcut opens, amount appended after it. */
+export const shortcutUrl = (botLink: string) => startAppUrl(botLink, 'inc_');

@@ -44,7 +44,16 @@ export interface Buy extends Rec {
   url: string;
   price: number;
   imgId?: string;
+  /** Picture shipped with the app (catalog items), relative to the site root. */
+  src?: string;
   tint?: string;
+  listId?: string;
+}
+
+/** A tab on the purchases screen: «Одежда», «Дом»… */
+export interface BuyList extends Rec {
+  name: string;
+  order: number;
 }
 
 export interface Category {
@@ -95,6 +104,7 @@ export interface StateV4 {
     incomes: Income[];
     car: Car;
     buys: Buy[];
+    buyLists: BuyList[];
     budgets: BudgetMonth[];
     spends: Spend[];
   };

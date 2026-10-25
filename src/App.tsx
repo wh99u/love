@@ -1,9 +1,10 @@
 import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
-import { appStore } from './lib/appStore';
+import { actions, appStore } from './lib/appStore';
+import { fetchCatalog } from './lib/catalog';
 import { dayKey } from './lib/dates';
+import { sync } from './lib/sync/controller';
 import { initTelegram } from './lib/telegram';
-import { startTilt } from './lib/tilt';
 import type { SearchHit } from './lib/search';
 import { openAccruals } from './screens/budget/AccrualsSheet';
 import { openBankForm } from './screens/budget/BankForm';
@@ -20,44 +21,55 @@ import { openDreamForm } from './screens/dream/DreamForm';
 import { PlannerPage } from './screens/planner/PlannerPage';
 import { handleLaunch } from './screens/shortcut/IncomingTopUp';
 import { ShortcutGuidePage } from './screens/shortcut/ShortcutGuidePage';
-import { Ambient } from './ui/Ambient';
+import { openJoin } from './screens/sync/JoinSheet';
+import { SyncPage } from './screens/sync/SyncPage';
+import { Glow, type GlowSpot } from './ui/Glow';
+import { fade, springs } from './ui/motion';
 import { SheetHost } from './ui/sheets';
 import { TabBar, TABS, type Tab } from './ui/TabBar';
 import { ToastHost, toast } from './ui/Toast';
 
-export type PageId = 'planner' | 'shortcut';
-export type AmbientColors = [string, string, string];
+export type PageId = 'planner' | 'shortcut' | 'sync';
 
-const TAB_AMBIENT: Record<Tab, AmbientColors> = {
-  budget: ['#2b2b33', '#3a2f12', '#1b2333'],
-  dream: ['#3a3326', '#262a33', '#1f1f24'],
-  buys: ['#2c1f45', '#123a3a', '#3a1f2c'],
-  calendar: ['#3a3212', '#162a4a', '#1f1f24'],
+/** Where the red light sits on every screen. */
+const TAB_GLOW: Record<Tab, GlowSpot> = {
+  budget: { x: 50, y: 24, size: 92, strength: 1 },
+  dream: { x: 50, y: 30, size: 110, strength: 1 },
+  buys: { x: 72, y: 10, size: 86, strength: 0.85 },
+  calendar: { x: 26, y: 4, size: 80, strength: 0.75 },
 };
 
 const variants = {
-  enter: (dir: number) => ({ opacity: 0, x: dir * 28 }),
+  enter: (dir: number) => ({ opacity: 0, x: dir * 22 }),
   center: { opacity: 1, x: 0 },
-  exit: (dir: number) => ({ opacity: 0, x: dir * -28 }),
+  exit: (dir: number) => ({ opacity: 0, x: dir * -22 }),
 };
+
+async function importCatalog() {
+  const items = await fetchCatalog();
+  const added = items.length ? actions.importCatalog(items) : 0;
+  if (added) toast(added === 1 ? 'В покупки добавлена новая вещь' : `В покупки добавлено вещей: ${added}`, 'success');
+}
 
 export function App() {
   const [tab, setTab] = useState<Tab>('budget');
   const [dir, setDir] = useState(1);
   const [page, setPage] = useState<PageId | null>(null);
-  const [ambient, setAmbient] = useState<AmbientColors | null>(null);
   const [day, setDay] = useState(() => dayKey(new Date()));
 
   useEffect(() => {
     initTelegram();
-    const stopTilt = startTilt();
     const off = appStore.onError((e) =>
       toast(e === 'save' ? 'Не удалось сохранить: память браузера заполнена' : 'Старые данные не прочитались, начинаем с чистого листа', 'error'),
     );
-    handleLaunch();
+    sync.start();
+    handleLaunch((space) => openJoin(space, () => setPage('sync')));
+    void importCatalog();
+    const onVisible = () => document.visibilityState === 'visible' && void importCatalog();
+    document.addEventListener('visibilitychange', onVisible);
     return () => {
-      stopTilt();
       off();
+      document.removeEventListener('visibilitychange', onVisible);
     };
   }, []);
 
@@ -67,7 +79,6 @@ export function App() {
       const to = TABS.findIndex((x) => x.id === t);
       setDir(to >= from ? 1 : -1);
       setTab(t);
-      setAmbient(null);
     },
     [tab],
   );
@@ -81,7 +92,7 @@ export function App() {
     else setPage('planner');
   };
 
-  /** The white «+» adds whatever the current tab is about. */
+  /** The red «+» adds whatever the current tab is about. */
   const plus: Record<Tab, () => void> = {
     budget: () => openBankForm(),
     dream: openDreamForm,
@@ -100,7 +111,7 @@ export function App() {
         onAccruals={openAccruals}
         onOpenPlanner={() => setPage('planner')}
         onOpenShortcut={() => setPage('shortcut')}
-        onAmbient={setAmbient}
+        onOpenSync={() => setPage('sync')}
       />
     ),
     dream: <DreamScreen />,
@@ -111,7 +122,7 @@ export function App() {
   return (
     <MotionConfig reducedMotion="user">
       <div className="app">
-        <Ambient colors={ambient ?? TAB_AMBIENT[tab]} />
+        <Glow spot={TAB_GLOW[tab]} />
         <div className="screens">
           <AnimatePresence initial={false} custom={dir} mode="popLayout">
             <motion.div
@@ -122,7 +133,7 @@ export function App() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ type: 'spring', stiffness: 420, damping: 40 }}
+              transition={{ x: springs.page, opacity: fade }}
             >
               {screens[tab]}
             </motion.div>
@@ -132,18 +143,11 @@ export function App() {
         <AnimatePresence>
           {page === 'shortcut' && <ShortcutGuidePage key="shortcut" onBack={closePage} />}
           {page === 'planner' && <PlannerPage key="planner" onBack={closePage} />}
+          {page === 'sync' && <SyncPage key="sync" onBack={closePage} />}
         </AnimatePresence>
         <SheetHost />
         <ToastHost />
-        <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden="true">
-          <filter id="lens" x="0" y="0" width="100%" height="100%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.008 0.012" numOctaves="2" seed="7" result="n" />
-            <feGaussianBlur in="n" stdDeviation="2" result="nb" />
-            <feDisplacementMap in="SourceGraphic" in2="nb" scale="18" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </svg>
       </div>
     </MotionConfig>
   );
 }
-

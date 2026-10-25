@@ -24,11 +24,16 @@ export function demoState(today = new Date()): StateV4 {
     color: '#1c1c1e',
     updatedAt: now,
   };
+  const clothes = rec({ name: 'Одежда', order: 0 });
+  const home = rec({ name: 'Для дома', order: 1 });
+  s.shared.buyLists = [clothes, home];
   s.shared.buys = [
-    rec({ title: 'Стол', url: '', price: 12990 }),
+    rec({ title: 'Куртка', url: '', price: 14990, listId: clothes.id }),
+    rec({ title: 'Стол', url: '', price: 12990, listId: home.id }),
     rec({ title: 'Наушники AirPods Pro', url: '', price: 24990 }),
-    rec({ title: 'Кроссовки', url: '', price: 11490 }),
-    rec({ title: 'Кресло', url: '', price: 18500 }),
+    rec({ title: 'Кроссовки', url: '', price: 11490, listId: clothes.id }),
+    rec({ title: 'Кресло', url: '', price: 18500, listId: home.id }),
+    rec({ title: 'Часы', url: '', price: 9990 }),
   ];
   s.shared.incomes = [
     rec({ date: day(5), amount: 30000, bankId: s.shared.banks[0].id, source: 'shortcut' as const }),
