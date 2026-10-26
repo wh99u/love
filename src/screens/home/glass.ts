@@ -47,10 +47,6 @@ export interface Field {
   refract: number;
   /** extra motion while the page scrolls, 0..1 */
   melt: number;
-  /** finger position across the picture, px, and how fresh the touch is (0..1) */
-  touchX: number;
-  touch: number;
-  ripples: { x: number; age: number }[];
 }
 
 /** The rib that covers column `x` (ribs are sorted and contiguous). */
@@ -68,8 +64,7 @@ export function fluteAt(x: number, flutes: Flute[]) {
 /**
  * Which column of the picture shows through at column `x`. Inside a rib the
  * picture is squeezed; towards the rib's edge the lens reaches far to the side,
- * which draws the thin tapering needles. On top: a slow liquid wobble, a bulge
- * under the finger and ripples from taps.
+ * which draws the thin tapering needles. On top: a slow liquid wobble.
  */
 export function sourceX(x: number, flutes: Flute[], f: Field) {
   let sx = x;
@@ -83,16 +78,6 @@ export function sourceX(x: number, flutes: Flute[], f: Field) {
   }
   const wave = 1 + f.melt * 3;
   sx += (Math.sin(x * 0.045 + f.t * 0.9) * 1.4 + Math.sin(x * 0.012 - f.t * 0.4) * 2.2) * wave;
-  if (f.touch > 0.001) {
-    const k = (x - f.touchX) / 60;
-    sx -= (x - f.touchX) * 0.45 * Math.exp(-k * k) * f.touch;
-  }
-  for (const r of f.ripples) {
-    const dist = Math.abs(x - r.x);
-    const front = r.age * 360;
-    if (dist > front + 24) continue;
-    sx += Math.sin((dist - front) / 12) * 9 * Math.exp(-r.age * 1.6) * Math.sign(x - r.x);
-  }
   return sx;
 }
 

@@ -21,8 +21,9 @@ import { openJoin } from './screens/sync/JoinSheet';
 import { SyncPage } from './screens/sync/SyncPage';
 import { Glow, type GlowSpot } from './ui/Glow';
 import { fade, springs } from './ui/motion';
-import { NavPill, type Tab, type Tool } from './ui/NavPill';
+import { openMore, type Tool } from './ui/MoreSheet';
 import { SheetHost } from './ui/sheets';
+import { TabBar, TABS, type Tab } from './ui/TabBar';
 import { ToastHost, toast } from './ui/Toast';
 import { refreshRate } from './ui/useMoney';
 
@@ -71,16 +72,21 @@ export function App() {
     };
   }, []);
 
-  const go = useCallback((t: Tab, d: number) => {
-    setDir(d);
-    setTab(t);
-  }, []);
+  const go = useCallback(
+    (t: Tab) => {
+      const from = TABS.findIndex((x) => x.id === tab);
+      const to = TABS.findIndex((x) => x.id === t);
+      setDir(to >= from ? 1 : -1);
+      setTab(t);
+    },
+    [tab],
+  );
 
   const closePage = useCallback(() => setPage(null), []);
 
   const onPick = (h: SearchHit) => {
-    if (h.group === 'buys') go('buys', 1);
-    else if (h.group === 'tasks') go('calendar', 1);
+    if (h.group === 'buys') go('buys');
+    else if (h.group === 'tasks') go('calendar');
     else if (h.group === 'incomes') openAccruals();
     else setPage('planner');
   };
@@ -122,7 +128,7 @@ export function App() {
             </motion.div>
           </AnimatePresence>
         </div>
-        <NavPill tab={tab} dir={dir} onTab={go} tools={tools} />
+        <TabBar tab={tab} onChange={go} onMore={() => openMore(tools)} />
         <AnimatePresence>
           {page === 'shortcut' && <ShortcutGuidePage key="shortcut" onBack={closePage} />}
           {page === 'planner' && <PlannerPage key="planner" onBack={closePage} />}

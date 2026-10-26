@@ -36,6 +36,7 @@ const MAP = {
   arrowDownRight: ['arrow-down-right', 'regular bold'],
   flag: ['flag', 'regular'],
   list: ['list-bullets', 'regular'],
+  more: ['squares-four', 'regular fill'],
   users: ['users', 'regular fill'],
   share: ['paper-plane-tilt', 'regular fill'],
   cloud: ['cloud-check', 'regular'],

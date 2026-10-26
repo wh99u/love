@@ -7,6 +7,7 @@ import { CardArt } from '../../ui/CardArt';
 import { Icon } from '../../ui/Icon';
 import { springs } from '../../ui/motion';
 import { Pressable } from '../../ui/Pressable';
+import { Swap } from '../../ui/Swap';
 import { useMoney } from '../../ui/useMoney';
 
 /** «Bank Account» from the reference: the one card; the white button moves money in or out. */
@@ -22,7 +23,13 @@ export function AccountCard({ onOpen, onMove }: { onOpen: () => void; onMove: ()
         <CardArt className="acct-thumb" />
         <span className="acct-text">
           <b>{BANK_NAMES[card?.code ?? 'tbank']}</b>
-          <span className="money">{card?.last4 ? `**** ${card.last4}` : m.fmt(total)}</span>
+          <span className="money">
+            {card?.last4 ? (
+              `**** ${card.last4}`
+            ) : (
+              <Swap k={m.cur}>{m.fmt(total)}</Swap>
+            )}
+          </span>
         </span>
       </Pressable>
       <Pressable

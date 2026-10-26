@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { cover, fluteAt, hash, makeFlutes, sourceX, type Field } from './glass';
 
-const still: Field = { t: 0, refract: 1, melt: 0, touchX: 0, touch: 0, ripples: [] };
+const still: Field = { t: 0, refract: 1, melt: 0 };
 const flutes = makeFlutes(400, 7);
 
 test('hash repeats for the same seed only', () => {
@@ -40,13 +40,9 @@ describe('sourceX', () => {
   test('without refraction only a few pixels of wobble remain', () => {
     for (let x = 0; x < 400; x += 7) expect(Math.abs(sourceX(x, flutes, plain) - x)).toBeLessThan(4);
   });
-  test('a touch magnifies the picture under the finger', () => {
-    const near = sourceX(130, flutes, { ...plain, touchX: 100, touch: 1 }) - sourceX(130, flutes, plain);
-    expect(near).toBeLessThan(-5);
-    expect(sourceX(400, flutes, { ...plain, touchX: 100, touch: 1 })).toBeCloseTo(sourceX(400, flutes, plain));
-  });
-  test('a ripple only reaches as far as its front', () => {
-    expect(sourceX(300, flutes, { ...plain, ripples: [{ x: 0, age: 0.1 }] })).toBe(sourceX(300, flutes, plain));
+  test('scrolling stirs the liquid harder', () => {
+    const drift = (melt: number) => Array.from({ length: 60 }, (_, i) => Math.abs(sourceX(i * 6, flutes, { ...plain, melt }) - i * 6)).reduce((t, v) => t + v, 0);
+    expect(drift(1)).toBeGreaterThan(drift(0) * 2);
   });
 });
 

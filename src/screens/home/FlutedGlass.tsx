@@ -26,7 +26,8 @@ interface FlutedGlassProps {
 /**
  * A picture behind reeded glass, redrawn column by column: every column of the
  * screen shows some column of the picture (see `sourceX`). An own photo gets the
- * full ribs; the default picture already has them and only ripples like liquid.
+ * full ribs; the default picture already has them and only sways like liquid.
+ * Touches do nothing to it.
  */
 export function FlutedGlass({ src, melt, className }: FlutedGlassProps) {
   const box = useRef<HTMLDivElement>(null);
@@ -41,7 +42,7 @@ export function FlutedGlass({ src, melt, className }: FlutedGlassProps) {
     if (!ctx) return;
     const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
     const own = !!src;
-    const field: Field = { t: 0, refract: own ? 1 : 0, melt: 0, touchX: 0, touch: 0, ripples: [] };
+    const field: Field = { t: 0, refract: own ? 1 : 0, melt: 0 };
     let flutes = makeFlutes(1, 5);
     let img: HTMLImageElement | null = null;
     let source: HTMLCanvasElement | null = null;
@@ -52,7 +53,6 @@ export function FlutedGlass({ src, melt, className }: FlutedGlassProps) {
     let visible = true;
     let alive = true;
     const started = performance.now();
-    let ripples: { x: number; born: number }[] = [];
 
     const build = () => {
       const r = el.getBoundingClientRect();
@@ -83,9 +83,6 @@ export function FlutedGlass({ src, melt, className }: FlutedGlassProps) {
       const s = (now - started) / 1000;
       field.t = reduced ? 0 : s;
       field.melt = meltRef.current?.get() ?? 0;
-      field.touch *= 0.93;
-      ripples = ripples.filter((r) => now - r.born < 2400);
-      field.ripples = ripples.map((r) => ({ x: r.x, age: (now - r.born) / 1000 }));
       const cw = canvas.width;
       const ch = canvas.height;
       const step = Math.max(1, Math.ceil(cw / MAX_COLUMNS));
@@ -98,9 +95,8 @@ export function FlutedGlass({ src, melt, className }: FlutedGlassProps) {
     const loop = (now: number) => {
       raf = 0;
       if (!alive || !visible || document.hidden) return;
-      // the liquid moves slowly: 30 fps is plenty and saves the battery; touches get every frame
-      const busy = field.touch > 0.01 || ripples.length > 0 || field.melt > 0.01;
-      if (busy || now - last > 32) {
+      // the liquid moves slowly: 30 fps is plenty and saves the battery; scrolling gets every frame
+      if (field.melt > 0.01 || now - last > 32) {
         last = now;
         draw(now);
       }
@@ -134,19 +130,6 @@ export function FlutedGlass({ src, melt, className }: FlutedGlassProps) {
     const onVis = () => kick();
     document.addEventListener('visibilitychange', onVis);
 
-    const local = (e: PointerEvent) => e.clientX - el.getBoundingClientRect().left;
-    const onMove = (e: PointerEvent) => {
-      field.touchX = local(e);
-      field.touch = Math.min(1, field.touch + 0.3);
-      kick();
-    };
-    const onDown = (e: PointerEvent) => {
-      ripples.push({ x: local(e), born: performance.now() });
-      kick();
-    };
-    el.addEventListener('pointermove', onMove);
-    el.addEventListener('pointerdown', onDown);
-
     return () => {
       alive = false;
       cancelAnimationFrame(raf);
@@ -154,8 +137,6 @@ export function FlutedGlass({ src, melt, className }: FlutedGlassProps) {
       ro.disconnect();
       io.disconnect();
       document.removeEventListener('visibilitychange', onVis);
-      el.removeEventListener('pointermove', onMove);
-      el.removeEventListener('pointerdown', onDown);
     };
   }, [src]);
 

@@ -6,6 +6,7 @@ import { visible } from '../../lib/records';
 import { Icon } from '../../ui/Icon';
 import { springs } from '../../ui/motion';
 import { Pressable } from '../../ui/Pressable';
+import { Swap } from '../../ui/Swap';
 import { useMoney } from '../../ui/useMoney';
 import { openCategory } from '../planner/CategorySheet';
 import { openSpendForm } from '../planner/forms';
@@ -26,7 +27,9 @@ export function PlanCard({ onOpen }: { onOpen: () => void }) {
       <div className="plan-card-head">
         <Pressable className="plan-card-title" scale={0.98} onPress={onOpen} aria-label="Открыть планировщик">
           <h2>Бюджет на {monthName(ym)}</h2>
-          <span className="t-cap">{sum.allocated > 0 ? `осталось ${m.fmt(sum.left)} из ${m.fmt(sum.allocated)}` : 'планировщик'}</span>
+          <span className="t-cap">
+            <Swap k={m.cur}>{sum.allocated > 0 ? `осталось ${m.fmt(sum.left)} из ${m.fmt(sum.allocated)}` : 'планировщик'}</Swap>
+          </span>
         </Pressable>
         <Pressable className="plan-card-add" aria-label="Записать трату" scale={0.86} onPress={() => (rows.length ? openSpendForm(ym) : onOpen())}>
           <Icon name="plus" size={22} />
@@ -46,8 +49,12 @@ export function PlanCard({ onOpen }: { onOpen: () => void }) {
                   <Icon name={cat.icon} size={24} fill />
                 </span>
                 <span className="plan-row-name">{cat.name}</span>
-                <span className="plan-row-meta">из {m.fmt(cat.limit)}</span>
-                <b className={`plan-row-sum money ${over ? 'neg' : ''}`}>{spent > 0 ? `−${m.fmt(spent)}` : m.fmt(0)}</b>
+                <span className="plan-row-meta">
+                  <Swap k={m.cur}>из {m.fmt(cat.limit)}</Swap>
+                </span>
+                <b className={`plan-row-sum money ${over ? 'neg' : ''}`}>
+                  <Swap k={m.cur}>{spent > 0 ? `−${m.fmt(spent)}` : m.fmt(0)}</Swap>
+                </b>
               </Pressable>
             </motion.li>
           ))}

@@ -59,6 +59,7 @@
   min-width: 214px;
   padding: 17px 34px 16px 20px;
   border-radius: 22px;
+  overflow: hidden;
   text-align: left;
   color: #fff;
   background: linear-gradient(100deg, rgba(74, 66, 70, 0.62) 0%, rgba(118, 110, 115, 0.5) 60%, rgba(150, 143, 147, 0.42) 100%);
@@ -68,6 +69,13 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.14),
     0 18px 40px -24px rgba(0, 0, 0, 0.5);
 }
+/* a light that sweeps the glass when the currency changes */
+.note-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.2) 48%, rgba(255, 255, 255, 0.06) 56%, transparent 70%);
+}
 .note-top {
   display: flex;
   align-items: baseline;
@@ -76,6 +84,8 @@
   row-gap: 2px;
 }
 .note-sum {
+  display: inline-block;
+  transform-origin: 0 60%;
   font: 300 31px/1.05 var(--font);
   letter-spacing: -0.045em;
   font-variant-numeric: tabular-nums;
@@ -88,7 +98,7 @@
   color: rgba(255, 255, 255, 0.78);
 }
 .note-cap {
-  display: block;
+  display: block !important;
   margin-top: 9px;
   font: 300 15.5px/1.2 var(--font);
   letter-spacing: -0.01em;
