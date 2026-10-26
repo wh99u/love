@@ -32,6 +32,8 @@ const MAP = {
   coins: ['coins', 'regular'],
   clock: ['clock', 'regular'],
   trend: ['trend-up', 'regular'],
+  arrowUpRight: ['arrow-up-right', 'regular bold'],
+  arrowDownRight: ['arrow-down-right', 'regular bold'],
   flag: ['flag', 'regular'],
   list: ['list-bullets', 'regular'],
   users: ['users', 'regular fill'],

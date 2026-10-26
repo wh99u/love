@@ -1,30 +1,58 @@
-/* Matte cards: a dark warm fill and a hairline edge. No gloss, no sheen. */
+/* Matte graphite cards: a dark fill and a hairline edge, lit a little from above. */
 .surface {
   position: relative;
   border-radius: var(--surface-r, var(--r-lg));
   background: var(--card);
-  box-shadow: inset 0 0 0 1px var(--border);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 0 0 1px var(--border);
 }
 .surface--raised {
   background: var(--s2);
 }
-/* The highlighted card: red light falls on its top corner. */
+/* On a computer cards answer the pointer with a brighter edge. */
+@media (hover: hover) {
+  button.surface,
+  .surface--lit {
+    transition: box-shadow 0.35s var(--ease-out);
+  }
+  button.surface:hover {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  }
+}
+/* The highlighted card: white light falls on its top corner. */
 .surface--lit {
   background: var(--card-lit);
   box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
     inset 0 0 0 1px var(--border-2),
-    0 18px 50px -24px rgba(255, 30, 55, 0.35);
+    0 24px 60px -30px rgba(0, 0, 0, 0.9);
 }
-/* Floating chrome (tab bar, toasts) sits over content: a dim, blurred backdrop. */
+/* Floating chrome (tab bar, toasts) sits over content: frosted glass. */
 .surface--float {
   background: var(--float-bg);
   -webkit-backdrop-filter: var(--float-blur);
   backdrop-filter: var(--float-blur);
   box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
     inset 0 0 0 1px var(--border-2),
     0 16px 40px rgba(0, 0, 0, 0.6);
 }
-/* A thin red light along the top edge. */
+/* Frosted glass over a picture, as in the reference notification. */
+.glass {
+  position: relative;
+  border-radius: var(--surface-r, var(--r-lg));
+  background: var(--glass-dark);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 20px 50px -20px rgba(0, 0, 0, 0.55);
+}
+/* A thin white light along the top edge. */
 .edge-glow::before {
   content: '';
   position: absolute;
@@ -32,7 +60,7 @@
   right: 14%;
   top: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent-hi), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
   pointer-events: none;
 }
 .edge-glow::after {
@@ -46,7 +74,7 @@
   pointer-events: none;
 }
 
-/* Light headings: thin, white fading into warm grey. */
+/* Light headings: thin, white fading into cool grey. */
 .grad-text {
   background: var(--text-grad);
   -webkit-background-clip: text;
@@ -62,13 +90,13 @@
   height: 30px;
   padding: 0 12px;
   border-radius: var(--r-pill);
-  background: rgba(255, 240, 240, 0.04);
+  background: rgba(255, 255, 255, 0.05);
   box-shadow: inset 0 0 0 1px var(--border-2);
   font: 500 13px/1 var(--font);
   color: var(--text-2);
   white-space: nowrap;
 }
-/* Red tag: «Перерасход», «Вместе» */
+/* Light tag: «Перерасход», «Вместе» */
 .tag {
   display: inline-flex;
   align-items: center;
@@ -76,8 +104,8 @@
   height: 22px;
   padding: 0 8px;
   border-radius: 7px;
-  background: rgba(255, 43, 69, 0.14);
-  color: var(--accent-hi);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
   font: 600 11.5px/1 var(--font);
   white-space: nowrap;
 }

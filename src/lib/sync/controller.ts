@@ -1,7 +1,7 @@
 import { appStore, isDemo } from '../appStore';
 import { defaultCar } from '../defaults';
 import { getImageBytes, putImageBytes } from '../images';
-import { startAppUrl } from '../shortcut';
+import { appLink } from '../shortcut';
 import { getUser } from '../telegram';
 import type { StateV4 } from '../types';
 import { firebaseConfig, saveConfig as storeConfig } from './config';
@@ -95,7 +95,8 @@ let generation = 0;
 
 const me = (): Member => {
   const u = getUser();
-  return { name: u.firstName, ...(u.photoUrl ? { photo: u.photoUrl } : {}), seen: Date.now() };
+  const name = appStore.get().personal.settings.name?.trim() || u.firstName;
+  return { name, ...(u.photoUrl ? { photo: u.photoUrl } : {}), seen: Date.now() };
 };
 
 function disconnect() {
@@ -212,7 +213,12 @@ export const sync = {
     set({ spaceId: null, status: 'off', members: {}, error: undefined });
   },
 
-  inviteLink(botLink: string) {
-    return state.spaceId ? startAppUrl(botLink, `join_${state.spaceId}`) : '';
+  /** Tells the partner about a new name right away. */
+  touch() {
+    if (transport && state.spaceId) void transport.hello(saved.deviceId, me()).catch(() => {});
+  },
+
+  inviteLink() {
+    return state.spaceId ? appLink(`join_${state.spaceId}`) : '';
   },
 };

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { AMOUNT_PATTERN, SHORTCUT_PATTERN, extractAmount, shortcutUrl } from './shortcut';
+import { AMOUNT_PATTERN, SHORTCUT_PATTERN, appLink, extractAmount, shortcutUrl } from './shortcut';
 
 describe('extractAmount', () => {
   const cases: [string, number | null][] = [
@@ -26,17 +26,14 @@ describe('patterns', () => {
   });
 });
 
-describe('shortcutUrl', () => {
-  test('appends startapp to a bot or app link', () => {
-    expect(shortcutUrl('https://t.me/my_bot')).toBe('https://t.me/my_bot?startapp=inc_');
-    expect(shortcutUrl('https://t.me/my_bot/app')).toBe('https://t.me/my_bot/app?startapp=inc_');
-    expect(shortcutUrl('https://t.me/my_bot?x=1')).toBe('https://t.me/my_bot?x=1&startapp=inc_');
+describe('site links', () => {
+  test('the shortcut opens the site with an amount placeholder', () => {
+    expect(shortcutUrl('https://me.github.io/love/')).toBe('https://me.github.io/love/?startapp=inc_');
   });
-  test('accepts a bare username', () => {
-    expect(shortcutUrl('@my_bot')).toBe('https://t.me/my_bot?startapp=inc_');
-    expect(shortcutUrl('t.me/my_bot')).toBe('https://t.me/my_bot?startapp=inc_');
+  test('invites carry the space id', () => {
+    expect(appLink('join_Ab3dEf7hJk2mNp4qRs5t', 'https://me.github.io/love/')).toBe('https://me.github.io/love/?startapp=join_Ab3dEf7hJk2mNp4qRs5t');
   });
-  test('empty link gives an empty url', () => {
-    expect(shortcutUrl('  ')).toBe('');
+  test('no address, no link', () => {
+    expect(appLink('inc_', '')).toBe('');
   });
 });

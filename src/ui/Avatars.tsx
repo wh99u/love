@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useStore } from '../lib/appStore';
 import { getUser } from '../lib/telegram';
 import type { Member } from '../lib/sync/transport';
 import { cx } from './cx';
@@ -27,12 +28,13 @@ export function usePartners(): Member[] {
 /** Me, and the partner tucked behind when the plan is shared; the dot tells the link state. */
 export function Avatars() {
   const me = getUser();
+  const name = useStore((st) => st.personal.settings.name?.trim()) || me.firstName;
   const s = useSync();
   const partners = usePartners();
   const shared = !!s.spaceId;
   return (
     <span className={cx('avatars', partners.length > 0 && 'avatars--pair')}>
-      <Face name={me.firstName} photo={me.photoUrl} />
+      <Face name={name} photo={me.photoUrl} />
       {partners.slice(0, 1).map((p) => (
         <Face key="p" name={p.name} photo={p.photo} className="avatar--partner" />
       ))}

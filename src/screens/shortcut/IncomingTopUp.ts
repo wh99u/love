@@ -1,13 +1,13 @@
 import { actions, appStore } from '../../lib/appStore';
 import { visible } from '../../lib/records';
 import { launchKey, parseJoinParam, parseStartParam } from '../../lib/startParam';
-import { getLaunch } from '../../lib/telegram';
+import { clearLaunch, getLaunch } from '../../lib/telegram';
 import { toast } from '../../ui/Toast';
 import { openBankForm } from '../budget/BankForm';
 import { openTopUp } from '../budget/TopUpSheet';
 
 /**
- * Called once on start: a `startapp=inc_…` link from the iOS shortcut opens a
+ * Called once on start: a `?startapp=inc_…` link from the iOS shortcut opens a
  * prefilled top-up, `startapp=join_…` is an invite into a shared plan. Each launch
  * is honoured once, so reloads never double it.
  */
@@ -15,6 +15,7 @@ export function handleLaunch(onJoin?: (space: string) => void) {
   const { param, authDate } = getLaunch();
   const join = parseJoinParam(param);
   if (join && param) {
+    clearLaunch();
     if (actions.markLaunch(launchKey(authDate, param))) onJoin?.(join.space);
     return;
   }
@@ -28,6 +29,7 @@ export function handleLaunch(onJoin?: (space: string) => void) {
     openBankForm();
     return;
   }
+  clearLaunch();
   if (!actions.markLaunch(launchKey(authDate, param))) return;
 
   const bank =

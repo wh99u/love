@@ -7,13 +7,13 @@ test('the newest handler owns the back button', () => {
   const page = vi.fn();
   const sheet = vi.fn();
   const popPage = stack.push(page);
-  expect(apply).toHaveBeenLastCalledWith(page);
+  expect(apply).toHaveBeenLastCalledWith(page, 1);
   const popSheet = stack.push(sheet);
-  expect(apply).toHaveBeenLastCalledWith(sheet);
+  expect(apply).toHaveBeenLastCalledWith(sheet, 2);
   popSheet();
-  expect(apply).toHaveBeenLastCalledWith(page);
+  expect(apply).toHaveBeenLastCalledWith(page, 1);
   popPage();
-  expect(apply).toHaveBeenLastCalledWith(null);
+  expect(apply).toHaveBeenLastCalledWith(null, 0);
 });
 
 test('popping out of order keeps the right top', () => {
@@ -24,7 +24,7 @@ test('popping out of order keeps the right top', () => {
   const popA = stack.push(a);
   stack.push(b);
   popA();
-  expect(apply).toHaveBeenLastCalledWith(b);
+  expect(apply).toHaveBeenLastCalledWith(b, 1);
 });
 
 test('popping twice is harmless', () => {
@@ -33,5 +33,5 @@ test('popping twice is harmless', () => {
   const pop = stack.push(vi.fn());
   pop();
   pop();
-  expect(apply).toHaveBeenLastCalledWith(null);
+  expect(apply).toHaveBeenLastCalledWith(null, 0);
 });

@@ -7,7 +7,7 @@
   flex-shrink: 0;
 }
 
-/* the hero: name in light type, the car standing in front of a red flare */
+/* the hero: name in light type, the car standing in front of a white flare */
 .dream-card {
   position: relative;
   width: 100%;
@@ -20,10 +20,11 @@
   align-items: center;
   gap: 12px;
   text-align: center;
-  background: radial-gradient(80% 50% at 50% 100%, rgba(120, 10, 25, 0.35), transparent 70%), linear-gradient(180deg, #180c0e 0%, #0b0607 70%);
+  background: radial-gradient(80% 50% at 50% 100%, rgba(255, 255, 255, 0.08), transparent 70%), linear-gradient(180deg, #1a1a1d 0%, #09090a 70%);
   box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
     inset 0 0 0 1px var(--border),
-    0 30px 60px -30px rgba(255, 30, 55, 0.3);
+    0 30px 60px -30px rgba(0, 0, 0, 0.9);
 }
 .dream-name {
   display: block;
@@ -35,7 +36,7 @@
   height: 28px;
 }
 .dream-tag svg {
-  color: var(--accent-hi);
+  color: #fff;
 }
 .dream-car {
   position: relative;
@@ -54,7 +55,7 @@
   object-fit: contain;
   filter: drop-shadow(0 18px 18px rgba(0, 0, 0, 0.6));
 }
-/* elongated red light behind the car with a hot white core */
+/* elongated white light behind the car with a hot core */
 .dream-flare {
   position: absolute;
   left: -10%;
@@ -62,7 +63,7 @@
   top: 4%;
   height: 76%;
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(255, 60, 82, 0.95), rgba(255, 30, 55, 0.4) 40%, transparent);
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.42), rgba(200, 200, 215, 0.14) 40%, transparent);
   animation: flare-in 1.2s 0.2s var(--ease-out) both;
 }
 .dream-flare i {
@@ -73,8 +74,8 @@
   height: 3px;
   margin-top: -1.5px;
   border-radius: 2px;
-  background: linear-gradient(90deg, transparent, #ffd6db 35%, #fff 50%, #ffd6db 65%, transparent);
-  box-shadow: 0 0 18px 4px rgba(255, 60, 80, 0.7);
+  background: linear-gradient(90deg, transparent, #e8e8ee 35%, #fff 50%, #e8e8ee 65%, transparent);
+  box-shadow: 0 0 18px 4px rgba(255, 255, 255, 0.45);
 }
 @keyframes flare-in {
   from {
@@ -89,7 +90,7 @@
   bottom: 10px;
   height: 30px;
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(255, 40, 62, 0.3), transparent);
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.16), transparent);
   z-index: -1;
 }
 
@@ -139,8 +140,8 @@
   box-shadow: inset 0 0 0 1px var(--border-2);
 }
 .milestone--on {
-  color: #fff;
-  background: var(--accent);
+  color: #0a0a0b;
+  background: #fff;
   box-shadow: 0 0 16px -2px var(--glow);
 }
 
@@ -184,7 +185,7 @@
   height: 36px;
   padding: 8px;
   border-radius: 50%;
-  color: var(--accent-hi);
+  color: #fff;
   background: var(--accent-soft);
 }
 .fact-text {

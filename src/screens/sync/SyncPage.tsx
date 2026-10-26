@@ -71,21 +71,22 @@ function Setup() {
   );
 }
 
-function BotLinkField() {
-  const saved = useStore((s) => s.personal.settings.botLink);
-  const [link, setLink] = useState(saved);
+function NameField() {
+  const saved = useStore((s) => s.personal.settings.name ?? '');
+  const [name, setName] = useState(saved);
   return (
     <label className="field">
-      <span>Ссылка на бота с приложением</span>
+      <span>Как вас зовут</span>
       <input
         className="input"
-        placeholder="https://t.me/имя_бота"
-        value={link}
-        inputMode="url"
-        autoCapitalize="off"
-        autoCorrect="off"
-        onChange={(e) => setLink(e.target.value)}
-        onBlur={() => actions.setSettings({ botLink: link.trim() })}
+        placeholder="Имя, которое увидит партнёр"
+        value={name}
+        maxLength={24}
+        onChange={(e) => setName(e.target.value)}
+        onBlur={() => {
+          actions.setSettings({ name: name.trim() });
+          sync.touch();
+        }}
       />
     </label>
   );
@@ -93,16 +94,21 @@ function BotLinkField() {
 
 function Invite() {
   const s = useSync();
-  const botLink = useStore((st) => st.personal.settings.botLink);
-  const link = sync.inviteLink(botLink);
+  const link = sync.inviteLink();
   const code = s.spaceId ?? '';
+  const name = useStore((st) => st.personal.settings.name?.trim()) || getUser().firstName;
   return (
     <Surface className="sync-card rise" style={rise(2)}>
       <span className="t-eyebrow">Приглашение</span>
-      <p className="t-sub">Отправьте ссылку партнёру в Telegram. По ней приложение откроется и предложит присоединиться.</p>
-      {!botLink && <BotLinkField />}
+      <p className="t-sub">Отправьте ссылку партнёру. По ней сайт откроется и предложит присоединиться.</p>
+      <NameField />
       {link && (
-        <Pressable className="btn btn--primary" onPress={() => shareLink(link, `${getUser().firstName} приглашает вести общий план`)}>
+        <Pressable
+          className="btn btn--primary"
+          onPress={() => {
+            if (!shareLink(link, `${name} приглашает вести общий план`)) copyText(link);
+          }}
+        >
           <Icon name="share" size={20} fill />
           Отправить приглашение
         </Pressable>
@@ -110,7 +116,7 @@ function Invite() {
       <div className="sync-code">
         <span className="t-cap">Код</span>
         <code>{code.replace(/(.{5})(?=.)/g, '$1 ')}</code>
-        <Pressable className="sync-copy" feedback={false} aria-label="Скопировать код" onPress={() => copyText(link || code)}>
+        <Pressable className="sync-copy" feedback={false} aria-label="Скопировать ссылку" onPress={() => copyText(link || code)}>
           <Icon name="copy" size={18} />
         </Pressable>
       </div>

@@ -1,6 +1,5 @@
 import { motion } from 'motion/react';
-import { useState, type ReactNode } from 'react';
-import { actions, useStore } from '../../lib/appStore';
+import type { ReactNode } from 'react';
 import { SHORTCUT_PATTERN, shortcutUrl } from '../../lib/shortcut';
 import { Surface } from '../../ui/Surface';
 import { Icon } from '../../ui/Icon';
@@ -35,9 +34,7 @@ function Step({ n, title, children, warn }: { n: number; title: string; children
 }
 
 export function ShortcutGuidePage({ onBack }: { onBack: () => void }) {
-  const saved = useStore((s) => s.personal.settings.botLink);
-  const [link, setLink] = useState(saved);
-  const url = shortcutUrl(link);
+  const url = shortcutUrl();
 
   return (
     <Page title="Автопополнение" onBack={onBack}>
@@ -46,24 +43,10 @@ export function ShortcutGuidePage({ onBack }: { onBack: () => void }) {
           <Icon name="bolt" size={24} fill />
         </span>
         <p className="t-sub">
-          iPhone не даёт приложениям читать уведомления банков. Поэтому команда делает снимок экрана с уведомлением, находит в нём сумму и открывает «Мой план» с
-          готовым пополнением. Останется нажать «Зачислить».
+          iPhone не даёт сайтам читать уведомления банков. Поэтому команда делает снимок экрана с уведомлением, находит в нём сумму и открывает «Мой план» с готовым
+          пополнением. Останется нажать «Зачислить».
         </p>
       </Surface>
-
-      <label className="field guide-link">
-        <span>Ссылка на бота с этим приложением</span>
-        <input
-          className="input"
-          placeholder="https://t.me/имя_бота"
-          value={link}
-          inputMode="url"
-          autoCapitalize="off"
-          autoCorrect="off"
-          onChange={(e) => setLink(e.target.value)}
-          onBlur={() => actions.setSettings({ botLink: link.trim() })}
-        />
-      </label>
 
       <ol className="steps">
         <Step n={1} title="Создайте команду">
@@ -87,15 +70,9 @@ export function ShortcutGuidePage({ onBack }: { onBack: () => void }) {
             Найти <code className="inline">\D</code>, заменить на пустую строку, включите «Регулярное выражение». Останутся только цифры.
           </p>
         </Step>
-        <Step n={7} title="Открыть URL" warn={!url}>
-          {url ? (
-            <>
-              <p className="t-sub">Вставьте ссылку и сразу после неё добавьте переменную «Обновлённый текст».</p>
-              <CopyBox text={url} label="Скопировать ссылку" />
-            </>
-          ) : (
-            <p className="t-sub">Сначала укажите ссылку на бота в поле выше.</p>
-          )}
+        <Step n={7} title="Открыть URL">
+          <p className="t-sub">Вставьте ссылку на этот сайт и сразу после неё добавьте переменную «Обновлённый текст».</p>
+          <CopyBox text={url} label="Скопировать ссылку" />
         </Step>
         <Step n={8} title="Назначьте касание задней панели">
           <p className="t-sub">Настройки → Универсальный доступ → Касание → Касание задней панели → Двойное касание → «Пополнение».</p>

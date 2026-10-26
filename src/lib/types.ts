@@ -92,9 +92,18 @@ export interface Task extends Rec {
   done: boolean;
 }
 
+export type Currency = 'rub' | 'usd';
+
 export interface Settings {
+  /** Telegram bot link from the mini-app days; unused on the website. */
   botLink: string;
   lastTopUpBankId?: string;
+  /** Name the partner sees in the shared plan. */
+  name?: string;
+  /** Currency of the totals on the home screen. */
+  currency?: Currency;
+  /** Own picture behind the glass on the home screen (IndexedDB). */
+  heroImgId?: string;
 }
 
 export interface StateV4 {

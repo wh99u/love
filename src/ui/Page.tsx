@@ -14,7 +14,7 @@ interface PageProps {
   overlay?: ReactNode;
 }
 
-/** Full-screen page pushed over the tabs; Telegram's own Back button closes it. */
+/** Full-screen page pushed over the tabs; the browser's Back (or Telegram's) closes it. */
 export function Page({ title, onBack, children, action, overlay }: PageProps) {
   useEffect(() => backButton.push(onBack), [onBack]);
 

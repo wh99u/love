@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="0%" r="90%">
+      <stop offset="0" stop-color="#2a2a2e"/>
+      <stop offset="1" stop-color="#020202"/>
+    </radialGradient>
+    <linearGradient id="disc" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#9d9da6"/>
+    </linearGradient>
+    <pattern id="ribs" width="22" height="512" patternUnits="userSpaceOnUse">
+      <rect width="22" height="512" fill="#000" fill-opacity="0"/>
+      <rect x="15" width="7" height="512" fill="#000" fill-opacity="0.18"/>
+      <rect width="2" height="512" fill="#fff" fill-opacity="0.5"/>
+    </pattern>
+    <clipPath id="c"><circle cx="256" cy="256" r="150"/></clipPath>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <g clip-path="url(#c)">
+    <rect width="512" height="512" fill="url(#disc)"/>
+    <rect x="96" y="210" width="320" height="300" rx="150" fill="#111114"/>
+    <rect width="512" height="512" fill="url(#ribs)"/>
+  </g>
+</svg>

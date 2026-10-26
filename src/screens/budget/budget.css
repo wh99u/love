@@ -28,16 +28,16 @@
   border-radius: 50%;
   flex: none;
   object-fit: cover;
-  box-shadow: 0 0 0 1.5px rgba(255, 228, 230, 0.16);
+  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.16);
 }
 .avatar--letter {
   display: grid;
   place-items: center;
   font: 500 20px/1 var(--font);
-  color: #fff;
-  background: radial-gradient(80% 80% at 30% 20%, #ff5e70, var(--accent) 50%, var(--accent-deep));
+  color: #0a0a0b;
+  background: radial-gradient(80% 80% at 30% 20%, #ffffff, #d9d9df 50%, #8e8e95);
   box-shadow:
-    0 0 0 1.5px rgba(255, 228, 230, 0.16),
+    0 0 0 1.5px rgba(255, 255, 255, 0.16),
     0 6px 18px -6px var(--glow);
 }
 .avatars--pair .avatar--partner {
@@ -166,7 +166,7 @@
   --surface-r: 20px;
   color: var(--text-2);
   font: 500 15px/1 var(--font);
-  border: 1.5px dashed rgba(255, 228, 230, 0.18);
+  border: 1.5px dashed rgba(255, 255, 255, 0.18);
 }
 .pocket-front {
   position: absolute;
@@ -240,7 +240,8 @@
   place-items: center;
 }
 .action:first-child .action-circle {
-  background: radial-gradient(70% 70% at 50% 35%, #ff4a60, var(--accent) 60%, #d0122c);
+  background: radial-gradient(70% 70% at 50% 30%, #ffffff, #e9e9ee 60%, #c4c4cc);
+  color: #0a0a0b;
   box-shadow:
     0 0 24px -4px var(--glow),
     inset 0 0 0 1px rgba(255, 255, 255, 0.12);

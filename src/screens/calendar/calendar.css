@@ -57,7 +57,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 6px 1px 7px;
-  background: rgba(255, 240, 240, 0.035);
+  background: rgba(255, 255, 255, 0.035);
   box-shadow: inset 0 0 0 1px var(--border);
   transition:
     background 0.25s,
@@ -104,28 +104,28 @@
 
 /* day shift: the sun and its warm light */
 .day--sun {
-  background: radial-gradient(120% 90% at 50% 0%, rgba(255, 221, 45, 0.2), rgba(255, 221, 45, 0.06));
-  box-shadow: inset 0 0 0 1px rgba(255, 221, 45, 0.35);
+  background: radial-gradient(120% 90% at 50% 0%, rgba(255, 240, 200, 0.2), rgba(255, 240, 200, 0.06));
+  box-shadow: inset 0 0 0 1px rgba(255, 240, 200, 0.35);
 }
 .day--sun .day-top em {
   color: var(--yellow);
 }
 .day--moon {
-  background: radial-gradient(120% 90% at 50% 0%, rgba(138, 180, 255, 0.16), rgba(138, 180, 255, 0.04));
-  box-shadow: inset 0 0 0 1px rgba(138, 180, 255, 0.28);
+  background: radial-gradient(120% 90% at 50% 0%, rgba(190, 205, 255, 0.16), rgba(190, 205, 255, 0.04));
+  box-shadow: inset 0 0 0 1px rgba(190, 205, 255, 0.28);
 }
 .day--moon .day-top em {
   color: var(--blue);
 }
 .day--both {
-  background: linear-gradient(135deg, rgba(255, 221, 45, 0.16), rgba(138, 180, 255, 0.14));
+  background: linear-gradient(135deg, rgba(255, 240, 200, 0.16), rgba(190, 205, 255, 0.14));
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
 }
 .day--both .day-top em {
   color: #fff;
 }
 .day--sel {
-  background: rgba(255, 240, 240, 0.12);
+  background: rgba(255, 255, 255, 0.12);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
 }
 .day--today {
@@ -162,15 +162,15 @@
   margin-bottom: 8px;
 }
 .shift-row--d {
-  background: radial-gradient(120% 120% at 0% 0%, rgba(255, 221, 45, 0.22), rgba(255, 221, 45, 0.06));
-  box-shadow: inset 0 0 0 1px rgba(255, 221, 45, 0.3);
+  background: radial-gradient(120% 120% at 0% 0%, rgba(255, 240, 200, 0.22), rgba(255, 240, 200, 0.06));
+  box-shadow: inset 0 0 0 1px rgba(255, 240, 200, 0.3);
 }
 .shift-row--d .shift-ico {
   color: var(--yellow);
 }
 .shift-row--n {
-  background: radial-gradient(120% 120% at 0% 0%, rgba(138, 180, 255, 0.2), rgba(138, 180, 255, 0.05));
-  box-shadow: inset 0 0 0 1px rgba(138, 180, 255, 0.28);
+  background: radial-gradient(120% 120% at 0% 0%, rgba(190, 205, 255, 0.2), rgba(190, 205, 255, 0.05));
+  box-shadow: inset 0 0 0 1px rgba(190, 205, 255, 0.28);
 }
 .shift-row--n .shift-ico {
   color: var(--blue);
@@ -226,6 +226,7 @@
 }
 .task-check svg {
   position: relative;
+  color: #0a0a0b;
 }
 .task--done .task-check {
   border-color: var(--accent);

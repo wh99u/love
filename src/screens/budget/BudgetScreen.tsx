@@ -70,7 +70,7 @@ export function BudgetScreen(h: BudgetHandlers) {
       date: s.date,
       icon: s.type === 'd' ? 'sun' : 'moon',
       color: s.type === 'd' ? 'var(--yellow)' : 'var(--blue)',
-      bg: s.type === 'd' ? 'rgba(255,210,63,.13)' : 'rgba(127,168,255,.13)',
+      bg: s.type === 'd' ? 'rgba(255,240,200,.12)' : 'rgba(190,205,255,.12)',
     }));
     const incomeRecs = visible(incomes).map((x) => {
       const b = banks.find((bb) => bb.id === x.bankId);

@@ -9,17 +9,16 @@ html,
 body {
   height: 100%;
   background: var(--bg);
+  touch-action: manipulation;
 }
 body {
   font: 400 16px/1.35 var(--font);
-  letter-spacing: -0.011em;
+  letter-spacing: -0.012em;
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   overscroll-behavior: none;
   -webkit-user-select: none;
   user-select: none;
-  display: flex;
-  justify-content: center;
 }
 input,
 textarea {
@@ -42,25 +41,10 @@ svg {
 #root {
   position: relative;
   width: 100%;
-  max-width: 430px;
   height: 100dvh;
   overflow: hidden;
   background: var(--bg);
   isolation: isolate;
-}
-@media (min-width: 600px) {
-  body {
-    align-items: center;
-    background: #08080a;
-  }
-  #root {
-    width: 390px;
-    height: min(844px, 96vh);
-    border-radius: 46px;
-    box-shadow:
-      0 0 0 1px #222225,
-      0 40px 120px rgba(255, 40, 30, 0.08);
-  }
 }
 .num {
   font-variant-numeric: tabular-nums;

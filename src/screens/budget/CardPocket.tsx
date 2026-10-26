@@ -126,16 +126,16 @@ export function CardPocket({ banks, index, onIndex, onCardPress, onEmptyPress }:
       <svg className="pocket-front" viewBox="0 0 390 96" preserveAspectRatio="none" aria-hidden="true">
         <defs>
           <linearGradient id="pocket-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#140a0b" />
-            <stop offset="0.4" stopColor="#080405" />
-            <stop offset="1" stopColor="#060304" />
+            <stop offset="0" stopColor="#141416" />
+            <stop offset="0.4" stopColor="#070708" />
+            <stop offset="1" stopColor="#020202" />
           </linearGradient>
           <linearGradient id="pocket-edge" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stopColor="#ff5e70" stopOpacity="0" />
-            <stop offset="0.3" stopColor="#ff5e70" stopOpacity="0.22" />
-            <stop offset="0.5" stopColor="#ff8a96" stopOpacity="0.55" />
-            <stop offset="0.7" stopColor="#ff5e70" stopOpacity="0.22" />
-            <stop offset="1" stopColor="#ff5e70" stopOpacity="0" />
+            <stop offset="0" stopColor="#ffffff" stopOpacity="0" />
+            <stop offset="0.3" stopColor="#ffffff" stopOpacity="0.22" />
+            <stop offset="0.5" stopColor="#ffffff" stopOpacity="0.55" />
+            <stop offset="0.7" stopColor="#ffffff" stopOpacity="0.22" />
+            <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
           </linearGradient>
         </defs>
         <path d="M0 14 H72 C104 14 112 36 150 36 H240 C278 36 286 14 318 14 H390 V96 H0 Z" fill="url(#pocket-fill)" />

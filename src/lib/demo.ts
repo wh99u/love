@@ -35,9 +35,13 @@ export function demoState(today = new Date()): StateV4 {
     rec({ title: 'Кресло', url: '', price: 18500, listId: home.id }),
     rec({ title: 'Часы', url: '', price: 9990 }),
   ];
+  const ago = (n: number) => dayKey(addDays(today, -n));
   s.shared.incomes = [
     rec({ date: day(5), amount: 30000, bankId: s.shared.banks[0].id, source: 'shortcut' as const }),
     rec({ date: day(12), amount: 9700, bankId: s.shared.banks[1].id, source: 'manual' as const }),
+    rec({ date: ago(8), amount: 4500, bankId: s.shared.banks[2].id, source: 'manual' as const, note: 'Кешбэк' }),
+    rec({ date: ago(1), amount: 5200, bankId: s.shared.banks[0].id, source: 'shortcut' as const }),
+    rec({ date: ago(0), amount: 1800, bankId: s.shared.banks[1].id, source: 'manual' as const, note: 'Подработка' }),
   ];
 
   const cats = templateCategories(90000);

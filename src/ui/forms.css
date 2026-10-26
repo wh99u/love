@@ -198,7 +198,7 @@
 .photo-remove {
   align-self: center;
   padding: 8px;
-  color: #ff6961;
+  color: var(--red);
 }
 .photo-off {
   padding: 10px 4px;

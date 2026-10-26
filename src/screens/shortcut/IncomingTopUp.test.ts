@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 const launch = { param: 'inc_5000_sber' as string | null, authDate: '1760000000' as string | null };
-vi.mock('../../lib/telegram', () => ({ getLaunch: () => launch, haptic: () => {} }));
+vi.mock('../../lib/telegram', () => ({ getLaunch: () => launch, clearLaunch: () => {}, haptic: () => {} }));
 vi.mock('../budget/TopUpSheet', () => ({ openTopUp: vi.fn() }));
 vi.mock('../budget/BankForm', () => ({ openBankForm: vi.fn() }));
 vi.mock('../../ui/Toast', () => ({ toast: vi.fn() }));

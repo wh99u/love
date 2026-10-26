@@ -19,6 +19,7 @@ import { openBuyForm } from './screens/buys/BuyForm';
 import { DreamScreen } from './screens/dream/DreamScreen';
 import { openDreamForm } from './screens/dream/DreamForm';
 import { PlannerPage } from './screens/planner/PlannerPage';
+import { HomeScreen } from './screens/home/HomeScreen';
 import { handleLaunch } from './screens/shortcut/IncomingTopUp';
 import { ShortcutGuidePage } from './screens/shortcut/ShortcutGuidePage';
 import { openJoin } from './screens/sync/JoinSheet';
@@ -28,11 +29,13 @@ import { fade, springs } from './ui/motion';
 import { SheetHost } from './ui/sheets';
 import { TabBar, TABS, type Tab } from './ui/TabBar';
 import { ToastHost, toast } from './ui/Toast';
+import { refreshRate } from './ui/useMoney';
 
 export type PageId = 'planner' | 'shortcut' | 'sync';
 
-/** Where the red light sits on every screen. */
+/** Where the white light sits on every screen. */
 const TAB_GLOW: Record<Tab, GlowSpot> = {
+  home: { x: 50, y: 92, size: 120, strength: 0.6 },
   budget: { x: 50, y: 24, size: 92, strength: 1 },
   dream: { x: 50, y: 30, size: 110, strength: 1 },
   buys: { x: 72, y: 10, size: 86, strength: 0.85 },
@@ -40,9 +43,9 @@ const TAB_GLOW: Record<Tab, GlowSpot> = {
 };
 
 const variants = {
-  enter: (dir: number) => ({ opacity: 0, x: dir * 22 }),
-  center: { opacity: 1, x: 0 },
-  exit: (dir: number) => ({ opacity: 0, x: dir * -22 }),
+  enter: (dir: number) => ({ opacity: 0, x: dir * 36, scale: 0.98 }),
+  center: { opacity: 1, x: 0, scale: 1 },
+  exit: (dir: number) => ({ opacity: 0, x: dir * -36, scale: 0.98 }),
 };
 
 async function importCatalog() {
@@ -52,7 +55,7 @@ async function importCatalog() {
 }
 
 export function App() {
-  const [tab, setTab] = useState<Tab>('budget');
+  const [tab, setTab] = useState<Tab>('home');
   const [dir, setDir] = useState(1);
   const [page, setPage] = useState<PageId | null>(null);
   const [day, setDay] = useState(() => dayKey(new Date()));
@@ -65,6 +68,7 @@ export function App() {
     sync.start();
     handleLaunch((space) => openJoin(space, () => setPage('sync')));
     void importCatalog();
+    void refreshRate();
     const onVisible = () => document.visibilityState === 'visible' && void importCatalog();
     document.addEventListener('visibilitychange', onVisible);
     return () => {
@@ -94,6 +98,7 @@ export function App() {
 
   /** The red «+» adds whatever the current tab is about. */
   const plus: Record<Tab, () => void> = {
+    home: () => openTopUp(),
     budget: () => openBankForm(),
     dream: openDreamForm,
     buys: () => openBuyForm(),
@@ -101,6 +106,15 @@ export function App() {
   };
 
   const screens: Record<Tab, ReactNode> = {
+    home: (
+      <HomeScreen
+        onOpenBudget={() => go('budget')}
+        onOpenSync={() => setPage('sync')}
+        onTopUp={(id) => openTopUp(id)}
+        onNewCard={() => openBankForm()}
+        onAccruals={openAccruals}
+      />
+    ),
     budget: (
       <BudgetScreen
         onTopUp={(b) => openTopUp(b?.id)}
@@ -133,7 +147,7 @@ export function App() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ x: springs.page, opacity: fade }}
+              transition={{ x: springs.page, scale: springs.page, opacity: fade }}
             >
               {screens[tab]}
             </motion.div>

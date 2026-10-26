@@ -16,8 +16,9 @@ test('paletteFor is stable per title', () => {
   expect(paletteFor('Стол')).toMatch(/^#[0-9a-f]{6}$/i);
 });
 
-test('dark product colours glow red instead', () => {
+test('products glow in greys: silver for dark ones, white for bright ones', () => {
   expect(luminance('#ffffff')).toBeCloseTo(1);
-  expect(glowColor('#101b1a')).toBe('#ff2b45');
-  expect(glowColor('#3d8bff')).toBe('#3d8bff');
+  expect(glowColor('#101b1a')).toMatch(/^#([0-9a-f]{2})\1\1$/);
+  expect(glowColor('#ffffff')).toBe('#ffffff');
+  expect(luminance(glowColor('#101b1a'))).toBeLessThan(luminance(glowColor('#3d8bff')));
 });
