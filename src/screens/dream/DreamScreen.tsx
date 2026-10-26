@@ -168,12 +168,14 @@ export function DreamScreen({ onOpenSync }: { onOpenSync: () => void }) {
       <div className="dream-hero">
         <motion.div
           key={photo ?? 'none'}
-          className="dream-car"
+          className={`dream-car ${car.photoCut ? 'dream-car--cut' : ''}`}
           initial={{ y: '-70%', opacity: 0, scale: 1.08, filter: 'blur(14px)' }}
           animate={{ y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', transitionEnd: { filter: 'none' } }}
           transition={{ y: { type: 'spring', stiffness: 70, damping: 16, mass: 1.1 }, scale: { duration: 1.4, ease }, opacity: { duration: 0.6 }, filter: { duration: 0.9 } }}
         >
-          {photo ? (
+          {photo && car.photoCut ? (
+            <img className="dream-car-img dream-car-img--cut" src={photo} alt={car.name} />
+          ) : photo ? (
             <>
               <img className="dream-car-back" src={photo} alt="" aria-hidden="true" />
               <img className="dream-car-img" src={photo} alt={car.name} />
@@ -181,7 +183,7 @@ export function DreamScreen({ onOpenSync }: { onOpenSync: () => void }) {
           ) : (
             <div className={`dream-car-empty ${looking ? 'dream-car-empty--looking' : ''}`}>
               <Icon name="car" size={64} />
-              <span>{looking ? 'Ищу фото машины…' : missing ? 'Фото не нашлось — добавьте своё' : ''}</span>
+              <span>{looking ? 'Ищу фото и вырезаю машину…' : missing ? 'Фото не нашлось — добавьте своё' : ''}</span>
             </div>
           )}
         </motion.div>

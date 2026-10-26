@@ -51,6 +51,29 @@
     mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
   }
 }
+/* the car cut out of its photo, standing on white as in the reference */
+.dream-car--cut {
+  background: radial-gradient(85% 60% at 50% 46%, #ffffff 0%, #f1f1f3 55%, #e3e3e6 100%);
+}
+.dream-car-img--cut {
+  inset: auto;
+  left: 3%;
+  top: 17%;
+  width: 94%;
+  height: 64%;
+  object-fit: contain;
+  object-position: 50% 55%;
+  filter: grayscale(1) contrast(1.06) drop-shadow(0 26px 22px rgba(0, 0, 0, 0.26));
+}
+@media (min-width: 760px) {
+  .dream-car-img--cut {
+    left: 50%;
+    width: min(100%, 760px);
+    transform: translateX(-50%);
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
 .dream-car-empty {
   position: absolute;
   inset: 0;
@@ -80,8 +103,8 @@
 .dream-hero-top {
   position: absolute;
   inset: 0 0 auto;
-  height: 150px;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+  height: 120px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.32), rgba(0, 0, 0, 0));
   pointer-events: none;
 }
 .dream-hero-fade {
@@ -107,7 +130,12 @@
   align-items: center;
   gap: 10px;
   min-width: 0;
+  padding: 5px 14px 5px 5px;
+  border-radius: 22px;
   color: #fff;
+  background: rgba(22, 22, 24, 0.5);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
 }
 .dream-logo {
   flex: none;

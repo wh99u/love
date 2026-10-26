@@ -98,6 +98,7 @@ function DreamForm({ close }: { close: () => void }) {
       patch.imgId = photo ? await putImage(photo.blob) : undefined;
       patch.photoFor = undefined;
       patch.photoUrl = undefined;
+      patch.photoCut = undefined;
     }
     actions.setCar(patch);
     haptic('success');

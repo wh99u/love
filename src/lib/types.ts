@@ -48,6 +48,8 @@ export interface Car {
   photoFor?: string;
   /** link to the found photo when the browser could not keep a copy */
   photoUrl?: string;
+  /** the found photo is cut out: the car alone on a transparent background */
+  photoCut?: boolean;
   updatedAt: number;
 }
 
