@@ -1,203 +1,420 @@
+/* The dream screen follows the user's second reference: a light page, the car
+   photo at the top, a big share saved, glowing segments, a white and a black card. */
 .dream {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.dream > * {
-  flex-shrink: 0;
+  --dh: clamp(330px, 52vh, 480px);
+  --d-ink: #0b0b0c;
+  --d-ink-2: rgba(11, 11, 12, 0.55);
+  --d-pad: max(16px, calc((100% - var(--col)) / 2));
+  padding-top: 0;
+  color: var(--d-ink);
+  background: linear-gradient(180deg, #d6d6d9 0%, #e8e8eb 42%, #dedee1 100%);
 }
 
-/* the hero: name in light type, the car standing in front of a white flare */
-.dream-card {
-  position: relative;
-  width: 100%;
-  border-radius: var(--r-xl);
-  padding: 22px 8px 20px;
+/* ---------- the car ---------- */
+.dream-hero {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--dh);
   overflow: hidden;
-  isolation: isolate;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  text-align: center;
-  background: radial-gradient(80% 50% at 50% 100%, rgba(255, 255, 255, 0.08), transparent 70%), linear-gradient(180deg, #1a1a1d 0%, #09090a 70%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.07),
-    inset 0 0 0 1px var(--border),
-    0 30px 60px -30px rgba(0, 0, 0, 0.9);
-}
-.dream-name {
-  display: block;
-  font: 300 36px/1.05 var(--font);
-  letter-spacing: -0.05em;
-  padding: 0 12px;
-}
-.dream-tag {
-  height: 28px;
-}
-.dream-tag svg {
-  color: #fff;
 }
 .dream-car {
-  position: relative;
-  width: 100%;
-  margin-top: 18px;
-}
-.dream-svg,
-.dream-photo {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: auto;
-}
-.dream-photo {
-  max-height: 200px;
-  object-fit: contain;
-  filter: drop-shadow(0 18px 18px rgba(0, 0, 0, 0.6));
-}
-/* elongated white light behind the car with a hot core */
-.dream-flare {
   position: absolute;
-  left: -10%;
-  right: -10%;
-  top: 4%;
-  height: 76%;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.42), rgba(200, 200, 215, 0.14) 40%, transparent);
-  animation: flare-in 1.2s 0.2s var(--ease-out) both;
+  inset: 0;
 }
-.dream-flare i {
+.dream-car-back,
+.dream-car-img {
   position: absolute;
-  left: 12%;
-  right: 12%;
-  top: 44%;
-  height: 3px;
-  margin-top: -1.5px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, transparent, #e8e8ee 35%, #fff 50%, #e8e8ee 65%, transparent);
-  box-shadow: 0 0 18px 4px rgba(255, 255, 255, 0.45);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
-@keyframes flare-in {
-  from {
-    opacity: 0;
-    transform: scaleX(0.4);
+.dream-car-back {
+  inset: -12%;
+  width: 124%;
+  height: 124%;
+  filter: grayscale(1) blur(28px) brightness(1.12);
+  opacity: 0.75;
+}
+.dream-car-img {
+  inset: 0;
+  object-position: center 60%;
+  filter: grayscale(1) contrast(1.08) brightness(1.04);
+}
+@media (min-width: 760px) {
+  .dream-car-img {
+    left: 50%;
+    width: min(100%, 980px);
+    transform: translateX(-50%);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
   }
 }
-.dream-floor {
+.dream-car-empty {
   position: absolute;
-  left: 10%;
-  right: 10%;
-  bottom: 10px;
-  height: 30px;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.16), transparent);
-  z-index: -1;
-}
-
-.dream-cta {
-  padding: 22px 18px 18px;
-  --surface-r: 26px;
+  inset: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  text-align: center;
-}
-
-.dream-progress {
-  padding: 18px;
-  --surface-r: 26px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.dream-progress-top {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding-top: 40px;
+  color: rgba(11, 11, 12, 0.3);
+  font: 400 13px/1.3 var(--font);
+  background: radial-gradient(70% 60% at 50% 55%, #f4f4f6, #d6d6d9);
 }
-.dream-amount {
+.dream-car-empty span {
+  color: var(--d-ink-2);
+}
+.dream-car-empty--looking svg {
+  animation: dream-look 1.6s ease-in-out infinite;
+}
+@keyframes dream-look {
+  50% {
+    opacity: 0.4;
+    transform: translateY(-4px);
+  }
+}
+/* dark at the very top for the status bar and the header, light at the bottom into the page */
+.dream-hero-top {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 150px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+  pointer-events: none;
+}
+.dream-hero-fade {
+  position: absolute;
+  inset: auto 0 0;
+  height: 42%;
+  background: linear-gradient(180deg, rgba(232, 232, 235, 0), #e8e8eb 92%);
+  pointer-events: none;
+}
+
+/* ---------- header: name, edit, the two of you, details ---------- */
+.dream-head {
+  position: relative;
+  z-index: 2;
   display: flex;
-  align-items: baseline;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.dream-saved {
-  font-size: 36px;
-}
-.milestones {
-  display: flex;
+  align-items: center;
   justify-content: space-between;
-  margin-top: 2px;
+  gap: 12px;
+  padding: calc(var(--top-inset) + 14px) var(--d-pad) 0;
 }
-.milestone {
-  width: 54px;
-  height: 28px;
-  border-radius: 14px;
+.dream-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  color: #fff;
+}
+.dream-logo {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
   display: grid;
   place-items: center;
-  font: 500 12px/1 var(--font);
-  color: var(--text-3);
-  box-shadow: inset 0 0 0 1px var(--border-2);
-}
-.milestone--on {
   color: #0a0a0b;
   background: #fff;
-  box-shadow: 0 0 16px -2px var(--glow);
 }
-
-.pace {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-.pace-tile {
-  --surface-r: 20px;
-  padding: 14px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
-}
-.pace-tile b {
-  font: 300 18px/1.1 var(--font);
-  letter-spacing: -0.04em;
+.dream-name {
+  font: 500 16px/1.2 var(--font);
+  letter-spacing: -0.02em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.35);
+}
+.dream-head-side {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dream-edit {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #0a0a0b;
+  background: #fff;
+  box-shadow: 0 10px 26px -10px rgba(0, 0, 0, 0.45);
+}
+.dream-face {
+  border-radius: 50%;
+}
+.dream-face .avatar {
+  width: 56px;
+  height: 56px;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.92);
+}
+.dream-info {
+  position: absolute;
+  z-index: 2;
+  top: calc(var(--top-inset) + 84px);
+  right: calc(var(--d-pad) + 6px);
+  width: 44px;
+  height: 44px;
+  --surface-r: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
 }
 
-.dream-facts {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-.fact {
-  --surface-r: 20px;
-  padding: 12px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  min-width: 0;
-}
-.fact > svg {
-  flex: none;
-  width: 36px;
-  height: 36px;
-  padding: 8px;
-  border-radius: 50%;
-  color: #fff;
-  background: var(--accent-soft);
-}
-.fact-text {
+/* ---------- «Vehicle Health 92%» ---------- */
+.dream-stat {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  min-width: 0;
+  align-items: center;
+  margin-top: calc(var(--dh) - 70px);
+  text-align: center;
 }
-.fact-text b {
-  font: 500 14.5px/1.2 var(--font);
+.dream-label {
+  font: 400 14px/1.2 var(--font);
+  color: var(--d-ink-2);
+}
+.dream-pct {
+  margin-top: 4px;
+  font: 300 64px/1.05 var(--font);
+  letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
+}
+.dream-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  width: 100%;
+  height: 40px;
+  margin-top: 16px;
+}
+.dream-seg {
+  position: relative;
+  flex: 1;
+  height: 100%;
+}
+.dream-seg-glow {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 100%;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(11, 11, 12, 0.04), rgba(11, 11, 12, 0.3));
+  filter: blur(6px);
+  transform-origin: 50% 100%;
+}
+.dream-seg-pill {
+  position: absolute;
+  left: 0;
+  bottom: 3px;
+  height: 9px;
+  border-radius: 5px;
+  background: var(--d-ink);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transform-origin: 0 50%;
+}
+.dream-seg-pill--soft {
+  background: rgba(11, 11, 12, 0.45);
+  box-shadow: none;
+}
+.dream-seg-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 6px;
+  height: 3px;
+  background: radial-gradient(circle, rgba(11, 11, 12, 0.35) 1.1px, transparent 1.5px) 0 50% / 7px 3px repeat-x;
+}
+
+/* ---------- the white and the black card ---------- */
+.dream-cards {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 22px;
+}
+.dream-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 178px;
+  padding: 16px;
+  border-radius: 28px;
+  overflow: hidden;
+}
+.dream-card--light {
+  background: #fbfbfc;
+  color: var(--d-ink);
+  box-shadow: 0 20px 44px -26px rgba(0, 0, 0, 0.4);
+}
+.dream-card--dark {
+  background: #0c0c0d;
+  color: #fff;
+  box-shadow: 0 20px 44px -22px rgba(0, 0, 0, 0.6);
+}
+.dream-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font: 500 15px/1 var(--font);
+  letter-spacing: -0.02em;
+}
+.dream-card-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  box-shadow: inset 0 0 0 1.2px rgba(11, 11, 12, 0.18);
+}
+.dream-card--dark .dream-card-icon {
+  box-shadow: inset 0 0 0 1.2px rgba(255, 255, 255, 0.25);
+}
+.dream-card-value {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 18px;
+}
+.dream-card-value b {
+  font: 300 30px/1 var(--font);
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+}
+.dream-card-value span,
+.dream-card-sub,
+.dream-card-foot {
+  font: 400 13px/1.2 var(--font);
+  opacity: 0.58;
+}
+.dream-card-sub {
+  margin-top: 6px;
+}
+.dream-card-foot {
+  margin-top: 8px;
+}
+.stairs {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 46px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+.stair {
+  flex: 1;
+  border-top: 2px solid rgba(11, 11, 12, 0.3);
+  background: repeating-linear-gradient(135deg, rgba(11, 11, 12, 0.1) 0 1.5px, transparent 1.5px 6px);
+  transform-origin: 50% 100%;
+}
+.stair--done {
+  border-top-color: var(--d-ink);
+}
+.arc {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: auto;
+}
+.arc-track,
+.arc-fill {
+  fill: none;
+  stroke-width: 9;
+  stroke-linecap: round;
+}
+.arc-track {
+  stroke: rgba(255, 255, 255, 0.16);
+}
+.arc-fill {
+  stroke: #fff;
+}
+.dream-cta {
+  margin-top: calc(var(--dh) - 24px);
+  min-height: 0;
+  gap: 8px;
+  padding: 22px 20px 18px;
+}
+.dream-cta b {
+  font: 400 22px/1.15 var(--font);
+  letter-spacing: -0.03em;
+}
+.dream-cta span {
+  font: 400 15px/1.35 var(--font);
+  color: var(--d-ink-2);
+}
+.dream-cta-btn {
+  background: var(--d-ink);
+  color: #fff;
+}
+
+/* ---------- details sheet ---------- */
+.dream-details {
+  display: flex;
+  flex-direction: column;
+}
+.dream-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 13px 4px;
+  border-bottom: 1px solid var(--line);
+}
+.dream-detail b {
+  font: 500 16px/1.2 var(--font);
 }
 .dream-note {
+  margin-top: 12px;
   text-align: center;
-  padding: 0 12px;
+}
+
+/* ---------- car picker in the form ---------- */
+.car-picker-field {
+  position: relative;
+}
+.car-picker-field > svg {
+  position: absolute;
+  left: 17px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-3);
+  pointer-events: none;
+}
+.car-picker-field .input {
+  padding-left: 44px;
+}
+.car-list {
+  list-style: none;
+  margin-top: 8px;
+  padding: 6px;
+  border-radius: 20px;
+  background: var(--s2);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+.car-option {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 14px;
+  font: 400 16px/1.2 var(--font);
+  text-align: left;
+  transition: background 0.2s;
+}
+.car-option:active {
+  background: rgba(255, 255, 255, 0.07);
+}
+.car-option b {
+  font-weight: 600;
+}
+.car-option span {
+  color: var(--text-2);
 }

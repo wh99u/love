@@ -36,10 +36,18 @@ export interface Income extends Rec {
 
 export interface Car {
   name: string;
+  /** picked from the car list; absent for names typed by hand */
+  make?: string;
+  model?: string;
   price: number;
   date: string;
+  /** colour of the old drawing, kept for older data */
   color: string;
   imgId?: string;
+  /** name the photo was found for; absent means the photo is the user's own */
+  photoFor?: string;
+  /** link to the found photo when the browser could not keep a copy */
+  photoUrl?: string;
   updatedAt: number;
 }
 

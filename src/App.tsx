@@ -103,7 +103,7 @@ export function App() {
 
   const screens: Record<Tab, ReactNode> = {
     home: <HomeScreen onOpenPlanner={() => setPage('planner')} onOpenCard={openCard} onMoney={() => openMoney()} />,
-    dream: <DreamScreen />,
+    dream: <DreamScreen onOpenSync={() => setPage('sync')} />,
     buys: <BuysScreen />,
     calendar: <CalendarScreen selected={day} onSelect={setDay} />,
   };
