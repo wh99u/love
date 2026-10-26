@@ -1,9 +1,6 @@
-import { actions, appStore } from '../../lib/appStore';
-import { visible } from '../../lib/records';
+import { actions } from '../../lib/appStore';
 import { launchKey, parseJoinParam, parseStartParam } from '../../lib/startParam';
 import { clearLaunch, getLaunch } from '../../lib/telegram';
-import { toast } from '../../ui/Toast';
-import { openBankForm } from '../budget/BankForm';
 import { openTopUp } from '../budget/TopUpSheet';
 
 /**
@@ -21,18 +18,8 @@ export function handleLaunch(onJoin?: (space: string) => void) {
   }
   const inc = parseStartParam(param);
   if (!inc || !param) return;
-
-  const s = appStore.get();
-  const banks = visible(s.shared.banks).sort((a, b) => a.order - b.order);
-  if (!banks.length) {
-    toast('Сначала добавьте карту, потом зачислим пополнение');
-    openBankForm();
-    return;
-  }
   clearLaunch();
   if (!actions.markLaunch(launchKey(authDate, param))) return;
-
-  const bank =
-    (inc.bank && banks.find((b) => b.code === inc.bank)) || banks.find((b) => b.id === s.personal.settings.lastTopUpBankId) || banks[0];
-  openTopUp(bank.id, inc.amount, 'shortcut');
+  // one card: the bank in the link no longer matters, the card is created on confirm if missing
+  openTopUp(inc.amount, 'shortcut');
 }

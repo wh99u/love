@@ -52,8 +52,8 @@
 
   --font: 'Manrope Variable', -apple-system, 'SF Pro Text', system-ui, 'Segoe UI', Roboto, sans-serif;
   --col: 560px;
-  --nav-h: 64px;
-  --nav-gap: calc(12px + max(var(--sab), 8px));
+  --nav-h: 62px;
+  --nav-gap: max(calc(var(--sab) - 18px), 12px);
   --screen-bottom: calc(var(--nav-h) + var(--nav-gap) + 28px);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-io: cubic-bezier(0.65, 0, 0.35, 1);

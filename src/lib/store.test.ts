@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { createStore, visible } from './store';
+import { cardTotal, createStore, mainCard, visible } from './store';
 
 const KEY = 'planner_v4';
 const LEGACY = 'planner_v3';
@@ -76,15 +76,28 @@ describe('cards and money', () => {
     expect(s.personal.settings.lastTopUpBankId).toBe(bank.id);
   });
 
-  test('transfer moves money and refuses to overdraw', () => {
+  test('one card: created on the first top-up, spends come off it', () => {
+    const store = fresh();
+    expect(mainCard(store.get())).toBeUndefined();
+    store.actions.cardTopUp(5000, 'manual');
+    const card = mainCard(store.get())!;
+    expect(card).toMatchObject({ code: 'tbank', sum: 5000 });
+    store.actions.cardSpend(1200);
+    expect(mainCard(store.get())!.sum).toBe(3800);
+    store.actions.cardTopUp(200, 'shortcut');
+    expect(visible(store.get().shared.banks)).toHaveLength(1);
+    expect(cardTotal(store.get())).toBe(4000);
+  });
+
+  test('cards from older versions add to the balance; setting it changes the main card', () => {
     const store = fresh();
     const a = store.actions.addBank('tbank', 1000);
-    const b = store.actions.addBank('sber', 0);
-    expect(store.actions.transfer(a.id, b.id, 1500)).toBe(false);
-    expect(store.get().shared.banks.map((x) => x.sum)).toEqual([1000, 0]);
-    expect(store.actions.transfer(a.id, b.id, 400)).toBe(true);
-    expect(store.get().shared.banks.map((x) => x.sum)).toEqual([600, 400]);
-    expect(store.actions.transfer(a.id, a.id, 1)).toBe(false);
+    store.actions.addBank('sber', 500);
+    expect(mainCard(store.get())!.id).toBe(a.id);
+    expect(cardTotal(store.get())).toBe(1500);
+    store.actions.setCard({ total: 2000, last4: '2644' });
+    expect(cardTotal(store.get())).toBe(2000);
+    expect(mainCard(store.get())).toMatchObject({ sum: 1500, last4: '2644' });
   });
 
   test('deleteBank leaves a tombstone hidden by visible()', () => {

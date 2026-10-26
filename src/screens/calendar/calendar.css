@@ -148,6 +148,18 @@
   align-items: center;
   gap: 5px;
 }
+.cal-actions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  margin-top: 18px;
+}
+.cal-actions .btn {
+  margin-top: 0;
+}
+.cal-actions .btn--ghost {
+  padding: 0 22px;
+}
 
 /* day sheet */
 .day-title::first-letter {

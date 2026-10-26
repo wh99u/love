@@ -136,6 +136,9 @@ export function BuysScreen() {
   return (
     <div className="screen buys">
       <header className="buys-head rise">
+        <Pressable className="buys-add" aria-label="Добавить покупку" feedback="medium" scale={0.86} onPress={() => openBuyForm(undefined, current === ALL ? undefined : current)}>
+          <Icon name="plus" size={22} stroke={2.2} />
+        </Pressable>
         <span className="pill">
           <Icon name="bag" size={15} fill />
           {listName ?? 'Все покупки'} · {buys.length}
@@ -146,7 +149,7 @@ export function BuysScreen() {
             <span className="tag">не хватает {rub(-after)}</span>
           ) : (
             <>
-              После них на картах останется <b className="money">{rub(after)}</b>
+              После них на карте останется <b className="money">{rub(after)}</b>
             </>
           )}
         </span>
@@ -163,7 +166,7 @@ export function BuysScreen() {
             <ProductIcon name={current === ALL ? 'bag' : 'gift'} size={104} />
           </span>
           <span className="t-h2">{current === ALL ? 'Что хотите купить?' : `Во вкладке «${listName}» пусто`}</span>
-          <span className="t-sub">Добавьте вещь с ценой и фото — увидите, сколько останется на картах. Или пришлите мне ссылку на товар, я вырежу его с фото и добавлю сюда.</span>
+          <span className="t-sub">Добавьте вещь с ценой и фото — увидите, сколько останется на карте. Или пришлите мне ссылку на товар, я вырежу его с фото и добавлю сюда.</span>
           <span className="btn btn--primary buys-empty-btn">
             <Icon name="plus" size={18} stroke={2.4} />
             Добавить покупку

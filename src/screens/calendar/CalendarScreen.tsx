@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import { useStore } from '../../lib/appStore';
-import { addMonths, dayKey, fmtMonth, monthGrid, ymKey } from '../../lib/dates';
+import { addMonths, dayKey, fmtDay, fmtMonth, monthGrid, ymKey } from '../../lib/dates';
 import { kf, monthAccruals } from '../../lib/money';
 import { visible } from '../../lib/records';
 import { haptic } from '../../lib/telegram';
@@ -13,7 +13,7 @@ import { Pressable } from '../../ui/Pressable';
 import { Ring } from '../../ui/Ring';
 import { rise } from '../../ui/rise';
 import { openDay } from './DaySheet';
-import { openPlanForm } from './forms';
+import { openPlanForm, openShiftForm, openTaskForm } from './forms';
 import './calendar.css';
 
 const WEEK = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
@@ -141,6 +141,17 @@ export function CalendarScreen({ selected, onSelect }: { selected: string; onSel
         <span>
           <i className="dot" /> есть задачи
         </span>
+      </div>
+
+      <div className="cal-actions rise" style={rise(5)}>
+        <Pressable className="btn btn--primary" onPress={() => openTaskForm(selected)}>
+          <Icon name="plus" size={18} stroke={2.4} />
+          Задача на {fmtDay(selected).replace('.', '')}
+        </Pressable>
+        <Pressable className="btn btn--ghost" onPress={() => openShiftForm(selected)}>
+          <Icon name="sun" size={18} />
+          Смена
+        </Pressable>
       </div>
     </div>
   );

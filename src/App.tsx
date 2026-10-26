@@ -7,27 +7,22 @@ import { sync } from './lib/sync/controller';
 import { initTelegram } from './lib/telegram';
 import type { SearchHit } from './lib/search';
 import { openAccruals } from './screens/budget/AccrualsSheet';
-import { openBankForm } from './screens/budget/BankForm';
-import { BudgetScreen } from './screens/budget/BudgetScreen';
+import { openCard } from './screens/budget/CardSheet';
 import { openSearch } from './screens/budget/SearchSheet';
-import { openTopUp } from './screens/budget/TopUpSheet';
-import { openTransfer } from './screens/budget/TransferSheet';
+import { openMoney } from './screens/budget/TopUpSheet';
 import { CalendarScreen } from './screens/calendar/CalendarScreen';
-import { openTaskForm } from './screens/calendar/forms';
 import { BuysScreen } from './screens/buys/BuysScreen';
-import { openBuyForm } from './screens/buys/BuyForm';
 import { DreamScreen } from './screens/dream/DreamScreen';
-import { openDreamForm } from './screens/dream/DreamForm';
 import { PlannerPage } from './screens/planner/PlannerPage';
-import { HomeScreen } from './screens/home/HomeScreen';
+import { HomeScreen, openHeroSheet } from './screens/home/HomeScreen';
 import { handleLaunch } from './screens/shortcut/IncomingTopUp';
 import { ShortcutGuidePage } from './screens/shortcut/ShortcutGuidePage';
 import { openJoin } from './screens/sync/JoinSheet';
 import { SyncPage } from './screens/sync/SyncPage';
 import { Glow, type GlowSpot } from './ui/Glow';
 import { fade, springs } from './ui/motion';
+import { NavPill, type Tab, type Tool } from './ui/NavPill';
 import { SheetHost } from './ui/sheets';
-import { TabBar, TABS, type Tab } from './ui/TabBar';
 import { ToastHost, toast } from './ui/Toast';
 import { refreshRate } from './ui/useMoney';
 
@@ -35,8 +30,7 @@ export type PageId = 'planner' | 'shortcut' | 'sync';
 
 /** Where the white light sits on every screen. */
 const TAB_GLOW: Record<Tab, GlowSpot> = {
-  home: { x: 50, y: 92, size: 120, strength: 0.6 },
-  budget: { x: 50, y: 24, size: 92, strength: 1 },
+  home: { x: 50, y: 92, size: 120, strength: 0.5 },
   dream: { x: 50, y: 30, size: 110, strength: 1 },
   buys: { x: 72, y: 10, size: 86, strength: 0.85 },
   calendar: { x: 26, y: 4, size: 80, strength: 0.75 },
@@ -77,57 +71,32 @@ export function App() {
     };
   }, []);
 
-  const go = useCallback(
-    (t: Tab) => {
-      const from = TABS.findIndex((x) => x.id === tab);
-      const to = TABS.findIndex((x) => x.id === t);
-      setDir(to >= from ? 1 : -1);
-      setTab(t);
-    },
-    [tab],
-  );
+  const go = useCallback((t: Tab, d: number) => {
+    setDir(d);
+    setTab(t);
+  }, []);
 
   const closePage = useCallback(() => setPage(null), []);
 
   const onPick = (h: SearchHit) => {
-    if (h.group === 'buys') go('buys');
-    else if (h.group === 'tasks') go('calendar');
+    if (h.group === 'buys') go('buys', 1);
+    else if (h.group === 'tasks') go('calendar', 1);
     else if (h.group === 'incomes') openAccruals();
     else setPage('planner');
   };
 
-  /** The red «+» adds whatever the current tab is about. */
-  const plus: Record<Tab, () => void> = {
-    home: () => openTopUp(),
-    budget: () => openBankForm(),
-    dream: openDreamForm,
-    buys: () => openBuyForm(),
-    calendar: () => openTaskForm(day),
-  };
+  const tools: Tool[] = [
+    { id: 'planner', label: 'Планировщик бюджета', icon: 'pie', run: () => setPage('planner') },
+    { id: 'card', label: 'Карта и баланс', icon: 'card', run: openCard },
+    { id: 'accruals', label: 'Начисления и пополнения', icon: 'coins', run: openAccruals },
+    { id: 'search', label: 'Поиск', icon: 'search', run: () => openSearch(onPick) },
+    { id: 'sync', label: 'Вместе', icon: 'users', run: () => setPage('sync') },
+    { id: 'shortcut', label: 'Автопополнение', icon: 'bolt', run: () => setPage('shortcut') },
+    { id: 'hero', label: 'Картинка на главной', icon: 'photo', run: openHeroSheet },
+  ];
 
   const screens: Record<Tab, ReactNode> = {
-    home: (
-      <HomeScreen
-        onOpenBudget={() => go('budget')}
-        onOpenSync={() => setPage('sync')}
-        onTopUp={(id) => openTopUp(id)}
-        onNewCard={() => openBankForm()}
-        onAccruals={openAccruals}
-      />
-    ),
-    budget: (
-      <BudgetScreen
-        onTopUp={(b) => openTopUp(b?.id)}
-        onTransfer={(b) => openTransfer(b?.id)}
-        onNewCard={() => openBankForm()}
-        onEditCard={openBankForm}
-        onSearch={() => openSearch(onPick)}
-        onAccruals={openAccruals}
-        onOpenPlanner={() => setPage('planner')}
-        onOpenShortcut={() => setPage('shortcut')}
-        onOpenSync={() => setPage('sync')}
-      />
-    ),
+    home: <HomeScreen onOpenPlanner={() => setPage('planner')} onOpenCard={openCard} onMoney={() => openMoney()} />,
     dream: <DreamScreen />,
     buys: <BuysScreen />,
     calendar: <CalendarScreen selected={day} onSelect={setDay} />,
@@ -153,7 +122,7 @@ export function App() {
             </motion.div>
           </AnimatePresence>
         </div>
-        <TabBar tab={tab} onChange={go} onPlus={plus[tab]} />
+        <NavPill tab={tab} dir={dir} onTab={go} tools={tools} />
         <AnimatePresence>
           {page === 'shortcut' && <ShortcutGuidePage key="shortcut" onBack={closePage} />}
           {page === 'planner' && <PlannerPage key="planner" onBack={closePage} />}

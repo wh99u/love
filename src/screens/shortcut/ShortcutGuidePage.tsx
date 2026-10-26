@@ -84,7 +84,7 @@ export function ShortcutGuidePage({ onBack }: { onBack: () => void }) {
         <p className="t-sub">Пришло уведомление о зачислении — дважды коснитесь задней крышки iPhone, пока баннер на экране. Можно и из Центра уведомлений.</p>
       </Surface>
 
-      <Pressable className="btn btn--ghost" onPress={() => openTopUp(undefined, 5000, 'test')}>
+      <Pressable className="btn btn--ghost" onPress={() => openTopUp(5000, 'test')}>
         <Icon name="check" size={20} />
         Проверить, как это выглядит
       </Pressable>

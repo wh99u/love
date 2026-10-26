@@ -62,7 +62,7 @@ export function DreamScreen() {
         <>
           <Surface className="dream-progress surface--lit rise" style={rise(1)}>
             <div className="dream-progress-top">
-              <span className="t-eyebrow">{reached ? 'Денег на картах хватает' : 'Накоплено'}</span>
+              <span className="t-eyebrow">{reached ? 'Денег на карте хватает' : 'Накоплено'}</span>
               <span className="tag">{Math.floor(d.pct)}%</span>
             </div>
             <div className="dream-amount">

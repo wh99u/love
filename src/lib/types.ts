@@ -20,6 +20,10 @@ export interface Bank extends Rec {
   code: BankCode;
   sum: number;
   order: number;
+  /** last four digits shown on the home screen */
+  last4?: string;
+  /** picture of the card (IndexedDB, synced) */
+  imgId?: string;
 }
 
 export interface Income extends Rec {

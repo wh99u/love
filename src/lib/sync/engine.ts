@@ -41,7 +41,7 @@ const MAX_IMAGE_B64 = 950_000; // a document holds 1 MiB
 
 /** Pictures the shared records point at. */
 const imageIds = (s: StateV4['shared']) => {
-  const ids = visible(s.buys).flatMap((b) => (b.imgId ? [b.imgId] : []));
+  const ids = [...visible(s.buys), ...visible(s.banks)].flatMap((b) => (b.imgId ? [b.imgId] : []));
   if (s.car.imgId) ids.push(s.car.imgId);
   return ids;
 };

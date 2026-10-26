@@ -1,39 +1,52 @@
 import { describe, expect, test } from 'vitest';
-import { cover, hash, noise, shift, type Field } from './glass';
+import { cover, fluteAt, hash, makeFlutes, sourceX, type Field } from './glass';
 
-const calm: Field = { seed: 7, t: 0, melt: 0, touchX: 0, touch: 0, ripples: [] };
+const still: Field = { t: 0, refract: 1, melt: 0, touchX: 0, touch: 0, ripples: [] };
+const flutes = makeFlutes(400, 7);
 
-describe('noise', () => {
-  test('stays in 0..1 and repeats for the same seed', () => {
-    for (let x = -50; x < 50; x += 0.37) {
-      const v = noise(x, 3);
-      expect(v).toBeGreaterThanOrEqual(0);
-      expect(v).toBeLessThanOrEqual(1);
-    }
-    expect(hash(12, 5)).toBe(hash(12, 5));
-    expect(hash(12, 5)).not.toBe(hash(12, 6));
+test('hash repeats for the same seed only', () => {
+  expect(hash(12, 5)).toBe(hash(12, 5));
+  expect(hash(12, 5)).not.toBe(hash(12, 6));
+});
+
+describe('ribs', () => {
+  test('cover the width without gaps, 14–34 px each', () => {
+    for (let i = 1; i < flutes.length; i++) expect(flutes[i].x0).toBeCloseTo(flutes[i - 1].x0 + flutes[i - 1].w);
+    expect(flutes.at(-1)!.x0 + flutes.at(-1)!.w).toBeGreaterThanOrEqual(400);
+    expect(flutes.every((r) => r.w >= 14 && r.w <= 34)).toBe(true);
   });
-  test('is continuous', () => {
-    expect(Math.abs(noise(4.999, 1) - noise(5.001, 1))).toBeLessThan(0.01);
+  test('fluteAt finds the rib under a column', () => {
+    for (const x of [0, 13.5, 99, 250, 399]) {
+      const r = fluteAt(x, flutes);
+      expect(x).toBeGreaterThanOrEqual(r.x0);
+      expect(x).toBeLessThan(r.x0 + r.w);
+    }
   });
 });
 
-describe('shift', () => {
-  test('a calm field moves columns by a bounded amount', () => {
-    for (let x = 0; x < 400; x += 2) expect(Math.abs(shift(x, calm))).toBeLessThan(260);
+describe('sourceX', () => {
+  const plain = { ...still, refract: 0 };
+  test('a rib squeezes a wider strip of the picture into itself', () => {
+    const r = fluteAt(200, flutes);
+    const a = sourceX(r.x0 + r.w * 0.3, flutes, still);
+    const b = sourceX(r.x0 + r.w * 0.7, flutes, still);
+    expect(b - a).toBeGreaterThan(r.w * 0.4);
   });
-  test('melting stretches the drips', () => {
-    const xs = Array.from({ length: 200 }, (_, i) => i * 2);
-    const energy = (f: Field) => xs.reduce((t, x) => t + Math.abs(shift(x, f)), 0);
-    expect(energy({ ...calm, melt: 1 })).toBeGreaterThan(energy(calm) * 2);
+  test('the edges of a rib reach far to the side', () => {
+    const r = fluteAt(200, flutes);
+    const edge = sourceX(r.x0 + r.w - 0.2, flutes, still) - sourceX(r.x0 + r.w / 2, flutes, still);
+    expect(edge).toBeGreaterThan(r.w / 2 + 10);
   });
-  test('a touch pushes the columns under the finger down', () => {
-    expect(shift(100, { ...calm, touchX: 100, touch: 1 }) - shift(100, calm)).toBeCloseTo(80);
-    expect(shift(300, { ...calm, touchX: 100, touch: 1 }) - shift(300, calm)).toBeCloseTo(0);
+  test('without refraction only a few pixels of wobble remain', () => {
+    for (let x = 0; x < 400; x += 7) expect(Math.abs(sourceX(x, flutes, plain) - x)).toBeLessThan(4);
+  });
+  test('a touch magnifies the picture under the finger', () => {
+    const near = sourceX(130, flutes, { ...plain, touchX: 100, touch: 1 }) - sourceX(130, flutes, plain);
+    expect(near).toBeLessThan(-5);
+    expect(sourceX(400, flutes, { ...plain, touchX: 100, touch: 1 })).toBeCloseTo(sourceX(400, flutes, plain));
   });
   test('a ripple only reaches as far as its front', () => {
-    const r = { ...calm, ripples: [{ x: 0, age: 0.1 }] };
-    expect(shift(300, r)).toBe(shift(300, calm));
+    expect(sourceX(300, flutes, { ...plain, ripples: [{ x: 0, age: 0.1 }] })).toBe(sourceX(300, flutes, plain));
   });
 });
 

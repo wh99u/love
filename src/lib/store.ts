@@ -79,6 +79,10 @@ export function listIdFor(name: string) {
   return `l-${h.toString(36)}`;
 }
 
+/** The one card the app shows: the first by order. Cards left from older versions still count towards the balance. */
+export const mainCard = (s: StateV4): Bank | undefined => visible(s.shared.banks).sort((a, b) => a.order - b.order)[0];
+export const cardTotal = (s: StateV4) => visible(s.shared.banks).reduce((t, b) => t + b.sum, 0);
+
 export function createStore(storage: Storage, key: string, opts: StoreOptions = {}) {
   const today = opts.now ?? (() => new Date());
   const loaded = load(storage, key, opts, Date.now());
@@ -137,7 +141,7 @@ export function createStore(storage: Storage, key: string, opts: StoreOptions = 
       shared({ banks: [...state.shared.banks, bank] });
       return bank;
     },
-    updateBank(id: string, patch: Partial<Pick<Bank, 'code' | 'sum' | 'order'>>) {
+    updateBank(id: string, patch: Partial<Pick<Bank, 'code' | 'sum' | 'order' | 'last4' | 'imgId'>>) {
       shared({ banks: patchIn(state.shared.banks, id, patch) });
     },
     deleteBank(id: string) {
@@ -165,16 +169,26 @@ export function createStore(storage: Storage, key: string, opts: StoreOptions = 
         incomes: removeIn(state.shared.incomes, incomeId),
       });
     },
-    transfer(fromId: string, toId: string, amount: number): boolean {
-      const from = visible(state.shared.banks).find((b) => b.id === fromId);
-      const to = visible(state.shared.banks).find((b) => b.id === toId);
-      if (!from || !to || from === to || amount <= 0 || amount > from.sum) return false;
-      shared({
-        banks: state.shared.banks.map((b) =>
-          b.id === fromId ? { ...b, sum: b.sum - amount, updatedAt: bump(b.updatedAt) } : b.id === toId ? { ...b, sum: b.sum + amount, updatedAt: bump(b.updatedAt) } : b,
-        ),
-      });
-      return true;
+    /** The card, created as an empty Т-Банк card the first time money moves. */
+    ensureCard(): Bank {
+      return mainCard(state) ?? actions.addBank('tbank', 0);
+    },
+    cardTopUp(amount: number, source: Income['source'], note?: string): Income {
+      return actions.topUp(actions.ensureCard().id, amount, source, note);
+    },
+    /** Money spent from the card. */
+    cardSpend(amount: number) {
+      const card = actions.ensureCard();
+      actions.updateBank(card.id, { sum: card.sum - amount });
+    },
+    /** Sets what the card shows: the balance (as a change on the main card), the last digits, the picture. */
+    setCard({ total, last4, imgId }: { total?: number; last4?: string; imgId?: string | null }) {
+      const card = actions.ensureCard();
+      const patch: Partial<Pick<Bank, 'sum' | 'last4' | 'imgId'>> = {};
+      if (total !== undefined) patch.sum = card.sum + (total - cardTotal(state));
+      if (last4 !== undefined) patch.last4 = last4;
+      if (imgId !== undefined) patch.imgId = imgId ?? undefined;
+      actions.updateBank(card.id, patch);
     },
     setCar(patch: Partial<Omit<Car, 'updatedAt'>>) {
       shared({ car: { ...state.shared.car, ...patch, updatedAt: bump(state.shared.car.updatedAt) } });

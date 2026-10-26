@@ -1,18 +1,21 @@
+/* Sizes follow the reference shot, straightened to a 390-pt iPhone screen. */
 .home {
-  --hero-h: min(74vh, 700px);
+  --hero-w: min(100vw, 640px);
+  --hero-h: calc(var(--hero-w) * 1.354);
   padding-top: 0;
 }
 
 /* ---------- picture behind reeded glass ---------- */
 .home-hero {
   position: absolute;
+  top: 0;
   left: 0;
   right: 0;
-  top: 0;
+  width: var(--hero-w);
   height: var(--hero-h);
+  margin: 0 auto;
   z-index: 0;
   transform-origin: 50% 0;
-  touch-action: pan-y;
 }
 .fluted {
   position: absolute;
@@ -25,200 +28,79 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  animation: fluted-in 1.6s var(--ease-out) both;
+  animation: fluted-in 1.4s var(--ease-out) both;
 }
 @keyframes fluted-in {
   from {
     opacity: 0;
-    transform: scale(1.08);
+    transform: scale(1.05);
+    filter: blur(10px);
   }
-}
-/* the ribs of the glass: a faint light edge and a shadow every few pixels */
-.fluted-ribs {
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.1) 0 1px,
-    rgba(255, 255, 255, 0) 1px 6px,
-    rgba(0, 0, 0, 0.07) 6px 9px,
-    rgba(0, 0, 0, 0) 9px 11px
-  );
-  mix-blend-mode: soft-light;
-  pointer-events: none;
 }
 .home-hero-fade {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(2, 2, 2, 0.4) 0%, rgba(2, 2, 2, 0) 16%, rgba(2, 2, 2, 0) 50%, rgba(2, 2, 2, 0.72) 76%, var(--bg) 100%);
+  background: linear-gradient(180deg, transparent 90%, var(--bg) 100%);
+}
+@media (min-width: 641px) {
+  .home-hero {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  }
 }
 
-/* ---------- over the picture ---------- */
-.home-lead {
-  position: relative;
-  z-index: 3;
-  height: calc(var(--hero-h) * 0.78);
-  padding-top: calc(var(--top-inset) + 12px);
-  display: flex;
-  flex-direction: column;
-}
-.home-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.home-chip {
-  --surface-r: 28px;
-  padding: 3px;
-  display: grid;
-  place-items: center;
-}
-.home-chip .avatar {
-  width: 42px;
-  height: 42px;
-  font-size: 17px;
-}
-.home-chip .avatar-dot {
-  border-color: #3a3a3e;
-}
-.home-chip--icon {
-  width: 48px;
-  height: 48px;
+/* ---------- «$22 K +14% ↗ upcoming this week» ---------- */
+.note {
+  position: absolute;
+  top: 18.4%;
+  right: 2.2%;
+  width: 60%;
+  min-width: 214px;
+  padding: 17px 34px 16px 20px;
+  border-radius: 22px;
+  text-align: left;
   color: #fff;
-}
-
-/* ---------- the total in a frosted notification ---------- */
-.bstack {
-  position: relative;
-  z-index: 2;
-  width: min(80%, 340px);
-  margin: clamp(24px, 10vh, 110px) 0 0 auto;
-}
-.bstack-scrim {
-  position: fixed;
-  inset: 0;
-  z-index: -10;
-  background: rgba(0, 0, 0, 0.42);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-}
-.bcard {
-  --surface-r: 26px;
-  padding: 18px 58px 16px 20px;
-  cursor: pointer;
-  outline: none;
-}
-.bcard:focus-visible {
+  background: linear-gradient(100deg, rgba(74, 66, 70, 0.62) 0%, rgba(118, 110, 115, 0.5) 60%, rgba(150, 143, 147, 0.42) 100%);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+  backdrop-filter: blur(18px) saturate(120%);
   box-shadow:
-    0 0 0 2px rgba(255, 255, 255, 0.7),
-    0 20px 50px -20px rgba(0, 0, 0, 0.55);
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 18px 40px -24px rgba(0, 0, 0, 0.5);
 }
-.bcard-top {
+.note-top {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  column-gap: 8px;
+  column-gap: 6px;
   row-gap: 2px;
 }
-.bcard-sum {
-  font: 300 40px/1.05 var(--font);
-  letter-spacing: -0.05em;
+.note-sum {
+  font: 300 31px/1.05 var(--font);
+  letter-spacing: -0.045em;
   font-variant-numeric: tabular-nums;
-  color: #fff;
-  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.18);
 }
-.bcard-delta {
+.note-delta {
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  font: 500 13px/1 var(--font);
+  font: 400 11.5px/1 var(--font);
   color: rgba(255, 255, 255, 0.78);
 }
-.bcard-cap {
+.note-cap {
   display: block;
-  margin-top: 8px;
-  font: 400 17px/1.2 var(--font);
-  letter-spacing: -0.02em;
-  color: rgba(255, 255, 255, 0.72);
+  margin-top: 9px;
+  font: 300 15.5px/1.2 var(--font);
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.62);
 }
-.bcard-cur {
+.note-x {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  perspective: 200px;
-  font: 500 16px/1 var(--font);
-  color: #fff;
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
-}
-.bnote {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  --surface-r: 22px;
-  display: grid;
-  grid-template-columns: 40px 1fr auto;
-  align-items: center;
-  gap: 12px;
-  padding: 0 16px 0 14px;
-  overflow: hidden;
-  cursor: pointer;
-  transform-origin: 50% 100%;
-}
-.bnote-badge {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: #fff;
-  color: #0a0a0b;
-  font: 650 17px/1 var(--font);
-}
-.bnote-text {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-.bnote-title {
-  font: 600 14.5px/1.2 var(--font);
-  white-space: nowrap;
-}
-.bnote-line {
-  font: 400 14px/1.25 var(--font);
-  color: rgba(255, 255, 255, 0.74);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.word {
-  display: inline-block;
-  white-space: pre;
-}
-.bnote-meta {
-  align-self: start;
-  margin-top: 15px;
-  font: 500 12.5px/1 var(--font);
-  color: rgba(255, 255, 255, 0.55);
-}
-.bnote-share {
-  position: absolute;
-  left: 66px;
-  right: 16px;
-  bottom: 8px;
-  height: 2px;
-  border-radius: 1px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.3));
-  transform-origin: 0 50%;
+  top: 17px;
+  right: 15px;
+  font: 300 16px/1 var(--font);
+  color: rgba(255, 255, 255, 0.85);
+  perspective: 120px;
 }
 
 /* ---------- cards under the picture ---------- */
@@ -228,127 +110,113 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  margin-top: calc(var(--hero-h) - 24px);
 }
+/* «Bank Account» */
 .acct {
   display: flex;
   align-items: center;
-  gap: 12px;
-  width: 100%;
+  gap: 10px;
   min-height: 104px;
-  padding: 14px 16px 14px 14px;
-  --surface-r: 32px;
-  text-align: left;
+  padding: 16px 16px 16px 18px;
+  border-radius: 28px;
+  background: rgba(24, 24, 26, 0.94);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 .acct-main {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 22px;
   min-width: 0;
   text-align: left;
 }
 .acct-thumb {
-  position: relative;
   flex: none;
-  width: 98px;
-  height: 66px;
-  perspective: 500px;
-  display: grid;
-  place-items: center;
-  border-radius: 12px;
-}
-.acct-thumb--empty {
-  color: var(--text-2);
-  border: 1.5px dashed rgba(255, 255, 255, 0.18);
-}
-.acct-mini {
-  position: absolute;
-  inset: 0;
-  border-radius: 11px;
-  padding: 9px 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
-    0 12px 24px -10px rgba(0, 0, 0, 0.9);
-}
-.acct-mini b {
-  font: 700 9px/1 var(--font);
-  letter-spacing: -0.01em;
-}
-.acct-mini i {
-  width: 16px;
-  height: 11px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.3);
-}
-.acct-mini em {
-  font: 600 8px/1 var(--font);
-  font-style: normal;
-  letter-spacing: 0.12em;
-  opacity: 0.75;
+  width: 88px;
+  border-radius: 7px;
 }
 .acct-text {
   display: grid;
-  gap: 8px;
+  gap: 9px;
   min-width: 0;
 }
 .acct-text b {
-  font: 400 21px/1.1 var(--font);
-  letter-spacing: -0.035em;
+  font: 400 18px/1.1 var(--font);
+  letter-spacing: -0.02em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.acct-text > span {
-  font: 400 16px/1.1 var(--font);
+.acct-text span {
+  font: 300 15px/1.1 var(--font);
   color: var(--text-2);
   white-space: nowrap;
 }
-.acct-stars {
-  font-style: normal;
-  letter-spacing: 0.08em;
-  opacity: 0.7;
-}
-.acct-swap {
+.acct-move {
   flex: none;
-  width: 64px;
-  height: 64px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: radial-gradient(70% 70% at 50% 30%, #ffffff, #ececf0 60%, #cfcfd6);
   color: #0a0a0b;
-  box-shadow:
-    0 0 0 6px rgba(255, 255, 255, 0.04),
-    0 14px 30px -12px rgba(255, 255, 255, 0.35);
-  transition: opacity 0.3s;
-}
-.acct-swap:disabled {
-  opacity: 0.4;
+  background: #fff;
+  box-shadow: 0 10px 26px -12px rgba(255, 255, 255, 0.4);
 }
 
-/* ---------- the week's top-ups ---------- */
-.feed {
-  padding: 22px 14px 14px;
-  --surface-r: 34px;
+/* «Authenticated platform» → this month's budget */
+.plan-card {
+  padding: 22px 16px 14px 20px;
+  border-radius: 30px;
+  background: rgba(22, 22, 24, 0.94);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
-.feed-head {
+.plan-card-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 4px 0 8px;
+  gap: 12px;
 }
-.feed-head-text {
+.plan-card-title {
   display: grid;
-  gap: 6px;
+  gap: 7px;
+  min-width: 0;
+  text-align: left;
 }
-.feed-title {
-  font: 400 25px/1.1 var(--font);
-  letter-spacing: -0.04em;
+.plan-card-title h2 {
+  font: 400 18px/1.15 var(--font);
+  letter-spacing: -0.02em;
 }
-.feed-add {
+.plan-card-title h2::first-letter {
+  text-transform: uppercase;
+}
+.plan-card-add {
+  flex: none;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.07);
+}
+.plan-card-rows {
+  list-style: none;
+  padding: 14px 0 0;
+  display: flex;
+  flex-direction: column;
+}
+.plan-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 58px auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 0;
+  text-align: left;
+}
+.plan-row-icon {
   width: 58px;
   height: 58px;
   border-radius: 50%;
@@ -356,123 +224,34 @@
   place-items: center;
   color: #fff;
   background: rgba(255, 255, 255, 0.06);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    inset 0 0 0 1px var(--border-2);
 }
-.feed-pages {
-  position: relative;
-  overflow: hidden;
-  margin: 6px -14px 0;
-  padding: 0 14px;
-}
-.feed-list {
-  list-style: none;
-  padding: 8px 0 2px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-height: 132px;
-}
-.feed-row {
-  display: grid;
-  grid-template-columns: 52px auto 1fr auto;
-  align-items: center;
-  gap: 14px;
-  padding: 6px 6px 6px 2px;
-}
-.feed-badge {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font: 500 18px/1 var(--font);
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.07),
-    inset 0 0 0 1px var(--border);
-}
-.feed-name {
-  font: 400 17px/1.2 var(--font);
+.plan-row-name {
+  font: 400 16px/1.2 var(--font);
   letter-spacing: -0.02em;
   white-space: nowrap;
 }
-.feed-meta {
-  font: 400 15px/1.2 var(--font);
+.plan-row-meta {
+  font: 300 15px/1.2 var(--font);
   color: var(--text-2);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.feed-sum {
-  font: 400 17px/1 var(--font);
+.plan-row-sum {
+  font: 400 16px/1 var(--font);
   white-space: nowrap;
 }
-.feed-empty {
-  display: grid;
-  gap: 6px;
-  place-content: center;
-  text-align: center;
-  min-height: 120px;
-  padding: 10px;
-}
-.feed-more {
+.plan-card-empty {
   display: flex;
-  justify-content: center;
-  padding-top: 6px;
-}
-
-/* ---------- ‹ This week › ---------- */
-.weekpill {
-  display: grid;
-  grid-template-columns: 46px 1fr auto 1fr 46px;
   align-items: center;
-  height: 62px;
-  margin-top: 10px;
-  padding: 0 6px;
-  --surface-r: 31px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.04));
-}
-.weekpill-arrow {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  color: #fff;
-  transition: opacity 0.3s;
-}
-.weekpill-arrow:disabled {
-  opacity: 0.25;
-}
-.weekpill-label {
-  display: grid;
-  place-items: center;
-  min-width: 128px;
-  padding: 0 8px;
-  font: 400 17px/1 var(--font);
-  letter-spacing: -0.02em;
-  white-space: nowrap;
-}
-.weekpill-label > span {
-  grid-area: 1 / 1;
-}
-.ruler {
-  height: 18px;
-  background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.55) 0 1px, transparent 1px) 0 0 / 42px 100% repeat-x,
-    linear-gradient(90deg, rgba(255, 255, 255, 0.4) 0 1px, transparent 1px) 0 50% / 7px 46% repeat-x,
-    linear-gradient(90deg, rgba(255, 255, 255, 0.3) 0 1px, transparent 1px) 0 50% / 21px 72% repeat-x;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 35%, #000 65%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 35%, #000 65%, transparent);
+  gap: 12px;
+  width: 100%;
+  margin-top: 14px;
+  padding: 14px 4px 6px 0;
+  text-align: left;
+  color: var(--text-2);
 }
 
-@media (min-width: 720px) {
-  .home {
-    --hero-h: min(78vh, 760px);
-  }
-  .bcard-sum {
-    font-size: 46px;
-  }
+.hero-sheet-lead {
+  margin: -4px 0 8px;
 }
