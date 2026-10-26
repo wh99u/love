@@ -28,6 +28,7 @@ jobs:
       - run: npm run build
         env:
           VITE_FIREBASE_CONFIG: ${{ vars.VITE_FIREBASE_CONFIG }}
+          VITE_POLLINATIONS_KEY: ${{ vars.VITE_POLLINATIONS_KEY }}
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:

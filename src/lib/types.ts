@@ -50,6 +50,8 @@ export interface Car {
   photoUrl?: string;
   /** the found photo is cut out: the car alone on a transparent background */
   photoCut?: boolean;
+  /** the photo is the neural render from above, as in the reference */
+  photoTop?: boolean;
   updatedAt: number;
 }
 

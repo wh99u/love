@@ -51,6 +51,55 @@
     mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
   }
 }
+/* the neural render from above the hood, as in the reference: its light floor melts into the page */
+.dream-car--top {
+  background: linear-gradient(180deg, #f6f6f8 0%, #ebebee 100%);
+}
+.dream-car-img--top {
+  inset: 0;
+  object-fit: cover;
+  object-position: 50% 42%;
+  mix-blend-mode: multiply;
+  filter: grayscale(1) contrast(1.08) brightness(1.05);
+}
+@media (min-width: 760px) {
+  .dream-car-img--top {
+    left: 50%;
+    width: min(100%, 640px);
+    transform: translateX(-50%);
+  }
+}
+.dream-drawing {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: 84px;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 14px 0 12px;
+  --surface-r: 17px;
+  border-radius: 17px;
+  font: 500 13px/1 var(--font);
+  color: #fff;
+  white-space: nowrap;
+}
+.dream-drawing i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  animation: dream-spin 0.9s linear infinite;
+}
+@keyframes dream-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* the car cut out of its photo, standing on white as in the reference */
 .dream-car--cut {
   background: radial-gradient(85% 60% at 50% 46%, #ffffff 0%, #f1f1f3 55%, #e3e3e6 100%);
@@ -82,7 +131,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding-top: 40px;
+  padding-bottom: 110px;
   color: rgba(11, 11, 12, 0.3);
   font: 400 13px/1.3 var(--font);
   background: radial-gradient(70% 60% at 50% 55%, #f4f4f6, #d6d6d9);

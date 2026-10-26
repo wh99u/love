@@ -99,6 +99,7 @@ function DreamForm({ close }: { close: () => void }) {
       patch.photoFor = undefined;
       patch.photoUrl = undefined;
       patch.photoCut = undefined;
+      patch.photoTop = undefined;
     }
     actions.setCar(patch);
     haptic('success');

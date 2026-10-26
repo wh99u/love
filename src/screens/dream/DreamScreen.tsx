@@ -1,4 +1,4 @@
-import { animate, motion, useMotionValue, useTransform } from 'motion/react';
+import { AnimatePresence, animate, motion, useMotionValue, useTransform } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { useStore } from '../../lib/appStore';
 import { fmtDay, monthName } from '../../lib/dates';
@@ -168,12 +168,14 @@ export function DreamScreen({ onOpenSync }: { onOpenSync: () => void }) {
       <div className="dream-hero">
         <motion.div
           key={photo ?? 'none'}
-          className={`dream-car ${car.photoCut ? 'dream-car--cut' : ''}`}
+          className={`dream-car ${car.photoTop ? 'dream-car--top' : car.photoCut ? 'dream-car--cut' : ''}`}
           initial={{ y: '-70%', opacity: 0, scale: 1.08, filter: 'blur(14px)' }}
           animate={{ y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', transitionEnd: { filter: 'none' } }}
           transition={{ y: { type: 'spring', stiffness: 70, damping: 16, mass: 1.1 }, scale: { duration: 1.4, ease }, opacity: { duration: 0.6 }, filter: { duration: 0.9 } }}
         >
-          {photo && car.photoCut ? (
+          {photo && car.photoTop ? (
+            <img className="dream-car-img dream-car-img--top" src={photo} alt={car.name} />
+          ) : photo && car.photoCut ? (
             <img className="dream-car-img dream-car-img--cut" src={photo} alt={car.name} />
           ) : photo ? (
             <>
@@ -183,10 +185,18 @@ export function DreamScreen({ onOpenSync }: { onOpenSync: () => void }) {
           ) : (
             <div className={`dream-car-empty ${looking ? 'dream-car-empty--looking' : ''}`}>
               <Icon name="car" size={64} />
-              <span>{looking ? 'Ищу фото и вырезаю машину…' : missing ? 'Фото не нашлось — добавьте своё' : ''}</span>
+              <span>{looking ? 'Рисую машину сверху…' : missing ? 'Картинка не получилась — добавьте своё фото' : ''}</span>
             </div>
           )}
         </motion.div>
+        <AnimatePresence>
+          {looking && photo && !car.photoTop && (
+            <motion.span className="dream-drawing glass" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} transition={springs.soft}>
+              <i />
+              Рисую вид сверху…
+            </motion.span>
+          )}
+        </AnimatePresence>
         <i className="dream-hero-top" />
         <i className="dream-hero-fade" />
 
